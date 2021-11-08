@@ -31,7 +31,7 @@ var s *Service
 
 // Init ...
 func Init(config Config) (*Service, error) {
-	if config.MongoDB.Host == "" || config.TablePrefix == "" {
+	if config.MongoDB.Host == "" {
 		return nil, errors.New("please provide all necessary information for init user")
 	}
 

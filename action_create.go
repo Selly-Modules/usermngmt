@@ -2,7 +2,6 @@ package usermngmt
 
 import (
 	"context"
-	"errors"
 	"fmt"
 
 	"github.com/Selly-Modules/logger"
@@ -12,13 +11,13 @@ import (
 
 // CreateOptions ...
 type CreateOptions struct {
-	Name           string
-	Phone          string
-	Email          string
-	HashedPassword string
-	Status         string
-	RoleID         primitive.ObjectID
-	Other          string
+	Name     string
+	Phone    string
+	Email    string
+	Password string
+	Status   string
+	RoleID   primitive.ObjectID
+	Other    string
 }
 
 // Create ...
@@ -29,7 +28,7 @@ func (s Service) Create(payload CreateOptions) error {
 	)
 
 	// Validate payload
-	err := payload.validate()
+	err := payload.validate(ctx)
 	if err != nil {
 		return err
 	}
@@ -40,20 +39,10 @@ func (s Service) Create(payload CreateOptions) error {
 		return err
 	}
 
-	//  Find roleID exists or not
-	if !s.isRoleIDAlreadyExisted(ctx, userData.RoleID) {
-		return errors.New("roleID does not exist")
-	}
-
-	// Find phone number,email exists or not
-	if s.isPhoneNumberOrEmailAlreadyExisted(ctx, userData.Phone, userData.Email) {
-		return errors.New("phone number or email already existed")
-	}
-
 	// Create device
 	_, err = col.InsertOne(ctx, userData)
 	if err != nil {
-		logger.Error("usermngmt - Create ", logger.LogData{
+		logger.Error("usermngmt - Create", logger.LogData{
 			"doc": userData,
 			"err": err.Error(),
 		})
@@ -70,7 +59,7 @@ func (payload CreateOptions) newUser() (result User, err error) {
 		Name:           payload.Name,
 		Phone:          payload.Phone,
 		Email:          payload.Email,
-		HashedPassword: payload.HashedPassword,
+		HashedPassword: hashPassword(payload.Password),
 		Status:         payload.Status,
 		RoleID:         payload.RoleID,
 		Other:          payload.Other,

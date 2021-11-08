@@ -6,4 +6,6 @@ const (
 	tableRole = "roles"
 
 	timezoneHCM = "Asia/Ho_Chi_Minh"
+
+	passwordHashingCost = 14
 )

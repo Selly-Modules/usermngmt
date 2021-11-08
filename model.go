@@ -12,9 +12,9 @@ type User struct {
 	Name           string             `bson:"name" json:"name"`
 	Phone          string             `bson:"phone" json:"phone"` // unique
 	Email          string             `bson:"email" json:"email"` // unique
-	HashedPassword string             `bson:"hashedPassword" json:"hashedPassword"`
+	HashedPassword string             `bson:"hashedPassword" json:"-"`
 	Status         string             `bson:"status" json:"status"`
-	RoleID         primitive.ObjectID `bson:"roleID" json:"roleId"`
+	RoleID         primitive.ObjectID `bson:"roleId" json:"roleId"`
 	Other          string             `bson:"other" json:"other"`
 	CreatedAt      time.Time          `bson:"createdAt" json:"createdAt"`
 	UpdatedAt      time.Time          `bson:"updatedAt" json:"updatedAt"`

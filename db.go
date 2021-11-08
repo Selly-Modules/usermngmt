@@ -12,18 +12,12 @@ import (
 
 //  getUserCollection ...
 func (s Service) getUserCollection() *mongo.Collection {
-	if s.TablePrefix != "" {
-		return s.DB.Collection(fmt.Sprintf("%s-%s", s.TablePrefix, tableUser))
-	}
-	return s.DB.Collection(tableUser)
+	return s.DB.Collection(fmt.Sprintf("%s-%s", s.TablePrefix, tableUser))
 }
 
 //  getRoleCollection ...
 func (s Service) getRoleCollection() *mongo.Collection {
-	if s.TablePrefix != "" {
-		s.DB.Collection(fmt.Sprintf("%s-%s", s.TablePrefix, tableRole))
-	}
-	return s.DB.Collection(tableRole)
+	return s.DB.Collection(fmt.Sprintf("%s-%s", s.TablePrefix, tableRole))
 }
 
 func (s Service) isPhoneNumberOrEmailExisted(ctx context.Context, phone, email string) bool {
@@ -71,4 +65,21 @@ func (s Service) isRoleIDExisted(ctx context.Context, roleID primitive.ObjectID)
 		return false
 	}
 	return total != 0
+}
+
+func (s Service) userCreate(ctx context.Context, doc User) error {
+	var (
+		col = s.getUserCollection()
+	)
+
+	_, err := col.InsertOne(ctx, doc)
+	if err != nil {
+		logger.Error("usermngmt - Create", logger.LogData{
+			"doc": doc,
+			"err": err.Error(),
+		})
+		return fmt.Errorf("error when create user: %s", err.Error())
+	}
+
+	return nil
 }

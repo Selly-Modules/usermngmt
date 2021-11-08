@@ -5,6 +5,7 @@ import (
 	"errors"
 
 	"github.com/Selly-Modules/logger"
+	"github.com/Selly-Modules/mongodb"
 )
 
 func (co CreateOptions) validate(ctx context.Context) error {
@@ -49,15 +50,19 @@ func (co CreateOptions) validate(ctx context.Context) error {
 	}
 
 	// RoleID
-	if co.RoleID.IsZero() {
-		logger.Error("usermngmt - Create: invalid roleID data", logger.LogData{
+	if co.RoleID == "" {
+		logger.Error("usermngmt - Create: no roleID data", logger.LogData{
 			"payload": co,
 		})
-		return errors.New("invalid roleID data")
+		return errors.New("no role id data")
 	}
 
 	//  Find roleID exists or not
-	if !s.isRoleIDExisted(ctx, co.RoleID) {
+	roleID, isValid := mongodb.NewIDFromString(co.RoleID)
+	if !isValid {
+		return errors.New("invalid role id data")
+	}
+	if !s.isRoleIDExisted(ctx, roleID) {
 		return errors.New("role id does not exist")
 	}
 

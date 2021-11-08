@@ -2,11 +2,8 @@ package usermngmt
 
 import (
 	"context"
-	"fmt"
 
-	"github.com/Selly-Modules/logger"
 	"github.com/Selly-Modules/mongodb"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // CreateOptions ...
@@ -16,14 +13,13 @@ type CreateOptions struct {
 	Email    string
 	Password string
 	Status   string
-	RoleID   primitive.ObjectID
+	RoleID   string
 	Other    string
 }
 
 // Create ...
 func (s Service) Create(payload CreateOptions) error {
 	var (
-		col = s.getUserCollection()
 		ctx = context.Background()
 	)
 
@@ -34,19 +30,15 @@ func (s Service) Create(payload CreateOptions) error {
 	}
 
 	// New user data from payload
-	userData, err := payload.newUser()
+	doc, err := payload.newUser()
 	if err != nil {
 		return err
 	}
 
-	// Create device
-	_, err = col.InsertOne(ctx, userData)
+	// Create user
+	err = s.userCreate(ctx, doc)
 	if err != nil {
-		logger.Error("usermngmt - Create", logger.LogData{
-			"doc": userData,
-			"err": err.Error(),
-		})
-		return fmt.Errorf("error when create user: %s", err.Error())
+		return err
 	}
 
 	return nil
@@ -54,6 +46,7 @@ func (s Service) Create(payload CreateOptions) error {
 
 func (payload CreateOptions) newUser() (result User, err error) {
 	timeNow := now()
+	roleID, _ := mongodb.NewIDFromString(payload.RoleID)
 	return User{
 		ID:             mongodb.NewObjectID(),
 		Name:           payload.Name,
@@ -61,7 +54,7 @@ func (payload CreateOptions) newUser() (result User, err error) {
 		Email:          payload.Email,
 		HashedPassword: hashPassword(payload.Password),
 		Status:         payload.Status,
-		RoleID:         payload.RoleID,
+		RoleID:         roleID,
 		Other:          payload.Other,
 		CreatedAt:      timeNow,
 		UpdatedAt:      timeNow,

@@ -7,17 +7,18 @@ import (
 
 	"github.com/Selly-Modules/logger"
 	"github.com/Selly-Modules/mongodb"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // CreateOptions ...
 type CreateOptions struct {
-	Name         string
-	Phone        string
-	Email        string
-	HashPassword string
-	Status       string
-	RoleID       string
-	Other        string
+	Name           string
+	Phone          string
+	Email          string
+	HashedPassword string
+	Status         string
+	RoleID         primitive.ObjectID
+	Other          string
 }
 
 // Create ...
@@ -39,9 +40,14 @@ func (s Service) Create(payload CreateOptions) error {
 		return err
 	}
 
-	// Find phone,email exists or not
-	if s.haveNameOrPhoneExisted(ctx, userData.Phone, userData.Email) {
-		return errors.New("have name or phone existed")
+	//  Find roleID exists or not
+	if !s.isRoleIDAlreadyExisted(ctx, userData.RoleID) {
+		return errors.New("roleID does not exist")
+	}
+
+	// Find phone number,email exists or not
+	if s.isPhoneNumberOrEmailAlreadyExisted(ctx, userData.Phone, userData.Email) {
+		return errors.New("phone number or email already existed")
 	}
 
 	// Create device
@@ -59,24 +65,16 @@ func (s Service) Create(payload CreateOptions) error {
 
 func (payload CreateOptions) newUser() (result User, err error) {
 	timeNow := now()
-
-	// New RoleID from string
-	roleID, isValid := mongodb.NewIDFromString(payload.RoleID)
-	if !isValid {
-		err = errors.New("invalid roleID")
-		return
-	}
-
 	return User{
-		ID:           mongodb.NewObjectID(),
-		Name:         payload.Name,
-		Phone:        payload.Phone,
-		Email:        payload.Email,
-		HashPassword: payload.HashPassword,
-		Status:       payload.Status,
-		RoleID:       roleID,
-		Other:        payload.Other,
-		CreatedAt:    timeNow,
-		UpdatedAt:    timeNow,
+		ID:             mongodb.NewObjectID(),
+		Name:           payload.Name,
+		Phone:          payload.Phone,
+		Email:          payload.Email,
+		HashedPassword: payload.HashedPassword,
+		Status:         payload.Status,
+		RoleID:         payload.RoleID,
+		Other:          payload.Other,
+		CreatedAt:      timeNow,
+		UpdatedAt:      timeNow,
 	}, nil
 }

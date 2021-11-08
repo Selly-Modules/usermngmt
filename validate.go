@@ -31,12 +31,12 @@ func (co CreateOptions) validate() error {
 		return errors.New("no email data")
 	}
 
-	// HashPassword
-	if co.HashPassword == "" {
-		logger.Error("usermngmt - Create: no hashPassword data", logger.LogData{
+	// HashedPassword
+	if co.HashedPassword == "" {
+		logger.Error("usermngmt - Create: no hashedPassword data", logger.LogData{
 			"payload": co,
 		})
-		return errors.New("no hashPassword data")
+		return errors.New("no hashedPassword data")
 	}
 
 	// Status
@@ -48,11 +48,11 @@ func (co CreateOptions) validate() error {
 	}
 
 	// RoleID
-	if co.RoleID == "" {
-		logger.Error("usermngmt - Create: no roleID data", logger.LogData{
+	if co.RoleID.IsZero() {
+		logger.Error("usermngmt - Create: invalid roleID data", logger.LogData{
 			"payload": co,
 		})
-		return errors.New("no roleID data")
+		return errors.New("invalid roleID data")
 	}
 
 	return nil

@@ -101,3 +101,12 @@ func (s Service) userUpdateOneByCondition(ctx context.Context, cond interface{},
 
 	return err
 }
+
+func (s Service) userFindByID(ctx context.Context, id primitive.ObjectID) (User, error) {
+	var (
+		col = s.getUserCollection()
+		doc User
+	)
+	err := col.FindOne(ctx, bson.M{"_id": id}).Decode(&doc)
+	return doc, err
+}

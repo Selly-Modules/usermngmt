@@ -123,3 +123,23 @@ func (co UpdateOptions) validate(ctx context.Context) error {
 
 	return nil
 }
+
+func (co ChangePasswordOptions) validate(userID string) error {
+	// OldPassword, NewPassword
+	if co.OldPassword == "" || co.NewPassword == "" {
+		logger.Error("usermngmt - ChangePassword: old or new password cannot be empty", logger.LogData{
+			"payload": co,
+		})
+		return errors.New("old or new password cannot be empty")
+	}
+
+	// UserID
+	if _, isValid := mongodb.NewIDFromString(userID); !isValid {
+		logger.Error("usermngmt - ChangePassword: invalid userID data", logger.LogData{
+			"payload": co,
+		})
+		return errors.New("invalid user id data")
+	}
+
+	return nil
+}

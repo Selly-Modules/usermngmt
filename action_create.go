@@ -24,8 +24,7 @@ func (s Service) Create(payload CreateOptions) error {
 	)
 
 	// Validate payload
-	err := payload.validate(ctx)
-	if err != nil {
+	if err := payload.validate(ctx); err != nil {
 		return err
 	}
 
@@ -36,8 +35,7 @@ func (s Service) Create(payload CreateOptions) error {
 	}
 
 	// Create user
-	err = s.userCreate(ctx, doc)
-	if err != nil {
+	if err = s.userCreate(ctx, doc); err != nil {
 		return err
 	}
 

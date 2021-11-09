@@ -17,6 +17,12 @@ type UpdateOptions struct {
 	Other  string
 }
 
+// ChangePasswordOptions ...
+type ChangePasswordOptions struct {
+	OldPassword string
+	NewPassword string
+}
+
 // UpdateByUserID ...
 func (s Service) UpdateByUserID(userID string, payload UpdateOptions) error {
 	var (
@@ -57,33 +63,34 @@ func (s Service) UpdateByUserID(userID string, payload UpdateOptions) error {
 	return nil
 }
 
-// ChangePasswordByUserID ...
-func (s Service) ChangePasswordByUserID(userID, oldPassword, newPassword string) error {
+// ChangeUserPassword ...
+func (s Service) ChangeUserPassword(userID string, opt ChangePasswordOptions) error {
 	var (
-		ctx   = context.Background()
-		id, _ = mongodb.NewIDFromString(userID)
+		ctx = context.Background()
 	)
 
-	if oldPassword == "" || newPassword == "" {
-		return errors.New("new password and old password cannot be empty")
+	// Validate payload
+	err := opt.validate(userID)
+	if err != nil {
+		return err
 	}
 
 	// Find user
+	id, _ := mongodb.NewIDFromString(userID)
 	user, _ := s.userFindByID(ctx, id)
 	if user.ID.IsZero() {
-		return errors.New("user does not exist")
+		return errors.New("user not found")
 	}
 
 	// Check old password
-	isValid := checkPasswordHash(oldPassword, user.HashedPassword)
-	if !isValid {
+	if isValid := checkPasswordHash(opt.OldPassword, user.HashedPassword); !isValid {
 		return errors.New("the password is incorrect")
 	}
 
 	// Update password
-	err := s.userUpdateOneByCondition(ctx, bson.M{"_id": user.ID}, bson.M{
+	err = s.userUpdateOneByCondition(ctx, bson.M{"_id": user.ID}, bson.M{
 		"$set": bson.M{
-			"hashedPassword": hashPassword(newPassword),
+			"hashedPassword": hashPassword(opt.NewPassword),
 			"updatedAt":      now(),
 		},
 	})
@@ -94,14 +101,19 @@ func (s Service) ChangePasswordByUserID(userID, oldPassword, newPassword string)
 	return nil
 }
 
-// ChangeStatusByUserID ...
-func (s Service) ChangeStatusByUserID(userID, newStatus string) error {
+// ChangeUserStatus ...
+func (s Service) ChangeUserStatus(userID, newStatus string) error {
 	var (
-		ctx   = context.Background()
-		id, _ = mongodb.NewIDFromString(userID)
+		ctx = context.Background()
 	)
 
-	// Update password
+	// Validate userID
+	id, isValid := mongodb.NewIDFromString(userID)
+	if !isValid {
+		return errors.New("invalid user id data")
+	}
+
+	// Update status
 	err := s.userUpdateOneByCondition(ctx, bson.M{"_id": id}, bson.M{
 		"$set": bson.M{
 			"status":    newStatus,

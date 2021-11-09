@@ -83,3 +83,21 @@ func (s Service) userCreate(ctx context.Context, doc User) error {
 
 	return nil
 }
+
+func (s Service) userUpdateOneByCondition(ctx context.Context, cond interface{}, payload interface{}) error {
+	var (
+		col = s.getUserCollection()
+	)
+
+	_, err := col.UpdateOne(ctx, cond, payload)
+	if err != nil {
+		logger.Error("usermngmt - Update", logger.LogData{
+			"cond": cond,
+			"payload": payload,
+			"err": err.Error(),
+		})
+		return fmt.Errorf("error when update user: %s", err.Error())
+	}
+
+	return err
+}

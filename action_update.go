@@ -30,8 +30,7 @@ func (s Service) UpdateByUserID(userID string, payload UpdateOptions) error {
 	)
 
 	// Validate payload
-	err := payload.validate(ctx)
-	if err != nil {
+	if err := payload.validate(ctx); err != nil {
 		return err
 	}
 
@@ -55,8 +54,7 @@ func (s Service) UpdateByUserID(userID string, payload UpdateOptions) error {
 	}
 
 	// Update
-	err = s.userUpdateOneByCondition(ctx, cond, updateData)
-	if err != nil {
+	if err := s.userUpdateOneByCondition(ctx, cond, updateData); err != nil {
 		return err
 	}
 
@@ -88,13 +86,12 @@ func (s Service) ChangeUserPassword(userID string, opt ChangePasswordOptions) er
 	}
 
 	// Update password
-	err = s.userUpdateOneByCondition(ctx, bson.M{"_id": user.ID}, bson.M{
+	if err = s.userUpdateOneByCondition(ctx, bson.M{"_id": user.ID}, bson.M{
 		"$set": bson.M{
 			"hashedPassword": hashPassword(opt.NewPassword),
 			"updatedAt":      now(),
 		},
-	})
-	if err != nil {
+	}); err != nil {
 		return err
 	}
 
@@ -114,13 +111,12 @@ func (s Service) ChangeUserStatus(userID, newStatus string) error {
 	}
 
 	// Update status
-	err := s.userUpdateOneByCondition(ctx, bson.M{"_id": id}, bson.M{
+	if err := s.userUpdateOneByCondition(ctx, bson.M{"_id": id}, bson.M{
 		"$set": bson.M{
 			"status":    newStatus,
 			"updatedAt": now(),
 		},
-	})
-	if err != nil {
+	}); err != nil {
 		return err
 	}
 

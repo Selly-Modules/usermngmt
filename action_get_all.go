@@ -17,7 +17,7 @@ type AllQuery struct {
 }
 
 // All ...
-func (s Service) All(queryParams AllQuery) (r ResponseUserAll) {
+func (s Service) All(queryParams AllQuery) (r UserAll) {
 	var (
 		ctx  = context.Background()
 		wg   sync.WaitGroup
@@ -56,12 +56,12 @@ func (s Service) All(queryParams AllQuery) (r ResponseUserAll) {
 	return
 }
 
-func getResponseList(ctx context.Context, users []User) []ResponseUser {
-	res := make([]ResponseUser, 0)
+func getResponseList(ctx context.Context, users []dbUser) []User {
+	res := make([]User, 0)
 
 	for _, user := range users {
 		role, _ := s.roleFindByID(ctx, user.RoleID)
-		res = append(res, ResponseUser{
+		res = append(res, User{
 			ID:     user.ID.Hex(),
 			Name:   user.Name,
 			Phone:  user.Phone,

@@ -42,10 +42,10 @@ func (s Service) Create(payload CreateOptions) error {
 	return nil
 }
 
-func (payload CreateOptions) newUser() (result User, err error) {
+func (payload CreateOptions) newUser() (result dbUser, err error) {
 	timeNow := now()
 	roleID, _ := mongodb.NewIDFromString(payload.RoleID)
-	return User{
+	return dbUser{
 		ID:             mongodb.NewObjectID(),
 		Name:           payload.Name,
 		SearchString:   getSearchString(payload.Name, payload.Phone, payload.Email),

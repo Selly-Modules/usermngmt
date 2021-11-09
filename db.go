@@ -68,7 +68,7 @@ func (s Service) isRoleIDExisted(ctx context.Context, roleID primitive.ObjectID)
 	return total != 0
 }
 
-func (s Service) userCreate(ctx context.Context, doc User) error {
+func (s Service) userCreate(ctx context.Context, doc dbUser) error {
 	var (
 		col = s.getUserCollection()
 	)
@@ -103,20 +103,20 @@ func (s Service) userUpdateOneByCondition(ctx context.Context, cond interface{},
 	return err
 }
 
-func (s Service) userFindByID(ctx context.Context, id primitive.ObjectID) (User, error) {
+func (s Service) userFindByID(ctx context.Context, id primitive.ObjectID) (dbUser, error) {
 	var (
 		col = s.getUserCollection()
-		doc User
+		doc dbUser
 	)
 	err := col.FindOne(ctx, bson.M{"_id": id}).Decode(&doc)
 	return doc, err
 }
 
-func (s Service) userFindByCondition(ctx context.Context, cond interface{}, opts ...*options.FindOptions) (docs []User) {
+func (s Service) userFindByCondition(ctx context.Context, cond interface{}, opts ...*options.FindOptions) (docs []dbUser) {
 	var (
 		col = s.getUserCollection()
 	)
-	docs = make([]User, 0)
+	docs = make([]dbUser, 0)
 
 	cursor, err := col.Find(ctx, cond, opts...)
 	if err != nil {
@@ -155,10 +155,10 @@ func (s Service) userCountByCondition(ctx context.Context, cond interface{}) int
 	return total
 }
 
-func (s Service) roleFindByID(ctx context.Context, id primitive.ObjectID) (Role, error) {
+func (s Service) roleFindByID(ctx context.Context, id primitive.ObjectID) (dbRole, error) {
 	var (
 		col = s.getRoleCollection()
-		doc Role
+		doc dbRole
 	)
 	err := col.FindOne(ctx, bson.M{"_id": id}).Decode(&doc)
 	return doc, err

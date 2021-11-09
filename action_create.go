@@ -48,6 +48,7 @@ func (payload CreateOptions) newUser() (result User, err error) {
 	return User{
 		ID:             mongodb.NewObjectID(),
 		Name:           payload.Name,
+		SearchString:   getSearchString(payload.Name, payload.Phone, payload.Email),
 		Phone:          payload.Phone,
 		Email:          payload.Email,
 		HashedPassword: hashPassword(payload.Password),

@@ -44,12 +44,13 @@ func (s Service) UpdateByUserID(userID string, payload UpdateOptions) error {
 	roleID, _ := mongodb.NewIDFromString(payload.RoleID)
 	updateData := bson.M{
 		"$set": bson.M{
-			"name":      payload.Name,
-			"phone":     payload.Phone,
-			"email":     payload.Email,
-			"roleId":    roleID,
-			"other":     payload.Other,
-			"updatedAt": now(),
+			"name":         payload.Name,
+			"searchString": getSearchString(payload.Name, payload.Phone, payload.Email),
+			"phone":        payload.Phone,
+			"email":        payload.Email,
+			"roleId":       roleID,
+			"other":        payload.Other,
+			"updatedAt":    now(),
 		},
 	}
 

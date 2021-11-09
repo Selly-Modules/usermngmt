@@ -10,6 +10,7 @@ import (
 type User struct {
 	ID             primitive.ObjectID `bson:"_id" json:"_id"`
 	Name           string             `bson:"name" json:"name"`
+	SearchString   string             `bson:"searchString" json:"-"`
 	Phone          string             `bson:"phone" json:"phone"` // unique
 	Email          string             `bson:"email" json:"email"` // unique
 	HashedPassword string             `bson:"hashedPassword" json:"-"`
@@ -18,6 +19,19 @@ type User struct {
 	Other          string             `bson:"other" json:"other"`
 	CreatedAt      time.Time          `bson:"createdAt" json:"createdAt"`
 	UpdatedAt      time.Time          `bson:"updatedAt" json:"updatedAt"`
+}
+
+// ResponseUser ...
+type ResponseUser struct {
+	ID        string    `json:"_id"`
+	Name      string    `json:"name"`
+	Phone     string    `json:"phone"`
+	Email     string    `json:"email"`
+	Status    string    `json:"status"`
+	Role      RoleShort `json:"role"`
+	Other     string    `json:"other"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
 }
 
 // Role ...
@@ -29,3 +43,17 @@ type Role struct {
 	CreatedAt time.Time          `bson:"createdAt" json:"createdAt"`
 	UpdatedAt time.Time          `bson:"updatedAt" json:"updatedAt"`
 }
+
+type RoleShort struct {
+	ID      string `json:"_id"`
+	Name    string `json:"name"`
+	IsAdmin bool   `json:"isAdmin"`
+}
+
+type (
+	// ResponseUserAll ...
+	ResponseUserAll struct {
+		List  []ResponseUser `json:"list"`
+		Total int64          `json:"total"`
+	}
+)

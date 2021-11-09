@@ -10,6 +10,7 @@ import (
 type User struct {
 	ID             primitive.ObjectID `bson:"_id" json:"_id"`
 	Name           string             `bson:"name" json:"name"`
+	SearchString   string             `bson:"searchString" json:"-"`
 	Phone          string             `bson:"phone" json:"phone"` // unique
 	Email          string             `bson:"email" json:"email"` // unique
 	HashedPassword string             `bson:"hashedPassword" json:"-"`

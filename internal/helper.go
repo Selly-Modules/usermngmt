@@ -2,6 +2,7 @@ package internal
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/Selly-Modules/mongodb"
 	"golang.org/x/crypto/bcrypt"
@@ -35,4 +36,13 @@ func GetSearchString(fieldList ...string) string {
 		format += " %s"
 	}
 	return fmt.Sprintf(format, searchList...)
+}
+
+// GenerateCode ...
+func GenerateCode(s string) string {
+	var (
+		underscore = "_"
+		emptySpace = " "
+	)
+	return strings.ReplaceAll(mongodb.NonAccentVietnamese(s), emptySpace, underscore)
 }

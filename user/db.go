@@ -29,7 +29,7 @@ func isPhoneNumberOrEmailExisted(ctx context.Context, phone, email string) bool 
 	}
 	total, err := col.CountDocuments(ctx, cond)
 	if err != nil {
-		logger.Error("usermngmt - countUserByCondition", logger.LogData{
+		logger.Error("usermngmt - User - CountDocuments", logger.LogData{
 			"condition": cond,
 			"err":       err.Error(),
 		})
@@ -48,7 +48,7 @@ func isRoleIDExisted(ctx context.Context, roleID primitive.ObjectID) bool {
 	}
 	total, err := col.CountDocuments(ctx, cond)
 	if err != nil {
-		logger.Error("usermngmt - countRoleByCondition", logger.LogData{
+		logger.Error("usermngmt - Role - CountDocuments", logger.LogData{
 			"condition": cond,
 			"err":       err.Error(),
 		})
@@ -72,7 +72,7 @@ func create(ctx context.Context, doc model.DBUser) error {
 	)
 	_, err := col.InsertOne(ctx, doc)
 	if err != nil {
-		logger.Error("usermngmt - Create", logger.LogData{
+		logger.Error("usermngmt - User - InsertOne", logger.LogData{
 			"doc": doc,
 			"err": err.Error(),
 		})
@@ -88,7 +88,24 @@ func updateOneByCondition(ctx context.Context, cond interface{}, payload interfa
 	)
 	_, err := col.UpdateOne(ctx, cond, payload)
 	if err != nil {
-		logger.Error("usermngmt - Update", logger.LogData{
+		logger.Error("usermngmt - User - UpdateOne", logger.LogData{
+			"cond":    cond,
+			"payload": payload,
+			"err":     err.Error(),
+		})
+		return fmt.Errorf("error when update user: %s", err.Error())
+	}
+
+	return err
+}
+
+func updateManyByCondition(ctx context.Context, cond interface{}, payload interface{}) error {
+	var (
+		col = database.GetUserCol()
+	)
+	_, err := col.UpdateMany(ctx, cond, payload)
+	if err != nil {
+		logger.Error("usermngmt - User - UpdateMany", logger.LogData{
 			"cond":    cond,
 			"payload": payload,
 			"err":     err.Error(),
@@ -116,7 +133,7 @@ func findByCondition(ctx context.Context, cond interface{}, opts ...*options.Fin
 
 	cursor, err := col.Find(ctx, cond, opts...)
 	if err != nil {
-		logger.Error("usermngmt - All", logger.LogData{
+		logger.Error("usermngmt - User - Find", logger.LogData{
 			"cond": cond,
 			"opts": opts,
 			"err":  err.Error(),
@@ -125,7 +142,7 @@ func findByCondition(ctx context.Context, cond interface{}, opts ...*options.Fin
 	}
 	defer cursor.Close(ctx)
 	if err = cursor.All(ctx, &docs); err != nil {
-		logger.Error("usermngmt - All - decode", logger.LogData{
+		logger.Error("usermngmt - User - Decode", logger.LogData{
 			"cond": cond,
 			"opts": opts,
 			"err":  err.Error(),

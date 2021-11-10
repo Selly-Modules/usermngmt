@@ -37,6 +37,11 @@ func (s Service) GetAllUser(query model.UserAllQuery) model.UserAll {
 	return user.All(query)
 }
 
+// ChangeAllUsersStatus ...
+func (s Service) ChangeAllUsersStatus(roleID, status string) error {
+	return user.ChangeAllUsersStatus(roleID, status)
+}
+
 //
 // Role
 //
@@ -46,4 +51,14 @@ func (s Service) GetAllUser(query model.UserAllQuery) model.UserAll {
 // CreateRole ...
 func (s Service) CreateRole(payload model.RoleCreateOptions) error {
 	return role.Create(payload)
+}
+
+// UpdateRole ...
+func (s Service) UpdateRole(roleID string, payload model.RoleUpdateOptions) error {
+	return role.Update(roleID, payload)
+}
+
+// GetAllRoles ...
+func (s Service) GetAllRoles(query model.RoleAllQuery) model.RoleAll {
+	return role.All(query)
 }

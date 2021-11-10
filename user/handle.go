@@ -257,3 +257,36 @@ func ChangeUserStatus(userID, newStatus string) error {
 
 	return nil
 }
+
+// ChangeAllUsersStatus ...
+func ChangeAllUsersStatus(roleID, status string) error {
+	var (
+		ctx = context.Background()
+	)
+
+	// Validate roleID
+	id, isValid := mongodb.NewIDFromString(roleID)
+	if !isValid {
+		return errors.New("invalid role id data")
+	}
+
+	// Setup condition
+	cond := bson.M{
+		"roleId": id,
+	}
+
+	// Setup update data
+	updateData := bson.M{
+		"$set": bson.M{
+			"status":    status,
+			"updatedAt": internal.Now(),
+		},
+	}
+
+	// Update
+	if err := updateManyByCondition(ctx, cond, updateData); err != nil {
+		return err
+	}
+
+	return nil
+}

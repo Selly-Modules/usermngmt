@@ -1,11 +1,10 @@
-package internal
+package model
 
 import (
 	"errors"
 	"time"
 
 	"github.com/Selly-Modules/logger"
-	"github.com/Selly-Modules/mongodb"
 )
 
 // CreateOptions ...
@@ -63,25 +62,6 @@ type (
 		Total int64  `json:"total"`
 	}
 )
-
-// NewUser ...
-func (payload CreateOptions) NewUser() (result DBUser, err error) {
-	timeNow := Now()
-	roleID, _ := mongodb.NewIDFromString(payload.RoleID)
-	return DBUser{
-		ID:             mongodb.NewObjectID(),
-		Name:           payload.Name,
-		SearchString:   GetSearchString(payload.Name, payload.Phone, payload.Email),
-		Phone:          payload.Phone,
-		Email:          payload.Email,
-		HashedPassword: HashPassword(payload.Password),
-		Status:         payload.Status,
-		RoleID:         roleID,
-		Other:          payload.Other,
-		CreatedAt:      timeNow,
-		UpdatedAt:      timeNow,
-	}, nil
-}
 
 // Validate ...
 func (co CreateOptions) Validate() error {

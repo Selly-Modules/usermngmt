@@ -1,4 +1,4 @@
-package internal
+package model
 
 type RoleShort struct {
 	ID      string `json:"_id"`

@@ -5,6 +5,8 @@ import (
 	"fmt"
 
 	"github.com/Selly-Modules/mongodb"
+	"github.com/Selly-Modules/usermngmt/role"
+	"github.com/Selly-Modules/usermngmt/user"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -21,10 +23,17 @@ type Config struct {
 	TablePrefix string
 }
 
+// Handler ...
+type Handler struct {
+	User user.Handle
+	Role role.Handle
+}
+
 // Service ...
 type Service struct {
-	Config
-	DB *mongo.Database
+	config  Config
+	db      *mongo.Database
+	handler Handler
 }
 
 var s *Service
@@ -55,8 +64,19 @@ func Init(config Config) (*Service, error) {
 	}
 
 	s = &Service{
-		Config: config,
-		DB:     db,
+		config: config,
+		db:     db,
+	}
+
+	// Setup handle
+	s.handler = Handler{
+		User: user.Handle{
+			Col:     s.getCollectionName(config.TablePrefix, tableUser),
+			RoleCol: s.getCollectionName(config.TablePrefix, tableRole),
+		},
+		Role: role.Handle{
+			Col: s.getCollectionName(config.TablePrefix, tableRole),
+		},
 	}
 
 	return s, nil

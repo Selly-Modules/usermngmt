@@ -6,12 +6,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-//  getUserCollection ...
-func (s Service) getUserCollection() *mongo.Collection {
-	return s.DB.Collection(fmt.Sprintf("%s-%s", s.TablePrefix, tableUser))
-}
-
-//  getRoleCollection ...
-func (s Service) getRoleCollection() *mongo.Collection {
-	return s.DB.Collection(fmt.Sprintf("%s-%s", s.TablePrefix, tableRole))
+//  getCollectionName ...
+func (s Service) getCollectionName(tablePrefix, table string) *mongo.Collection {
+	return s.db.Collection(fmt.Sprintf("%s-%s", tablePrefix, table))
 }

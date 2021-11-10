@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/Selly-Modules/logger"
-	"github.com/Selly-Modules/usermngmt/internal"
+	"github.com/Selly-Modules/usermngmt/internal/model"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -50,15 +50,15 @@ func (h Handle) isRoleIDExisted(ctx context.Context, roleID primitive.ObjectID) 
 	return total != 0
 }
 
-func (h Handle) roleFindByID(ctx context.Context, id primitive.ObjectID) (internal.DBRole, error) {
+func (h Handle) roleFindByID(ctx context.Context, id primitive.ObjectID) (model.DBRole, error) {
 	var (
-		doc internal.DBRole
+		doc model.DBRole
 	)
 	err := h.RoleCol.FindOne(ctx, bson.M{"_id": id}).Decode(&doc)
 	return doc, err
 }
 
-func (h Handle) create(ctx context.Context, doc internal.DBUser) error {
+func (h Handle) create(ctx context.Context, doc model.DBUser) error {
 	_, err := h.Col.InsertOne(ctx, doc)
 	if err != nil {
 		logger.Error("usermngmt - Create", logger.LogData{
@@ -85,16 +85,16 @@ func (h Handle) updateOneByCondition(ctx context.Context, cond interface{}, payl
 	return err
 }
 
-func (h Handle) findByID(ctx context.Context, id primitive.ObjectID) (internal.DBUser, error) {
+func (h Handle) findByID(ctx context.Context, id primitive.ObjectID) (model.DBUser, error) {
 	var (
-		doc internal.DBUser
+		doc model.DBUser
 	)
 	err := h.Col.FindOne(ctx, bson.M{"_id": id}).Decode(&doc)
 	return doc, err
 }
 
-func (h Handle) findByCondition(ctx context.Context, cond interface{}, opts ...*options.FindOptions) (docs []internal.DBUser) {
-	docs = make([]internal.DBUser, 0)
+func (h Handle) findByCondition(ctx context.Context, cond interface{}, opts ...*options.FindOptions) (docs []model.DBUser) {
+	docs = make([]model.DBUser, 0)
 
 	cursor, err := h.Col.Find(ctx, cond, opts...)
 	if err != nil {

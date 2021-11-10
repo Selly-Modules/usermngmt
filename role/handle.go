@@ -3,7 +3,7 @@ package role
 import (
 	"context"
 
-	"github.com/Selly-Modules/usermngmt/internal"
+	"github.com/Selly-Modules/usermngmt/internal/model"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -13,13 +13,13 @@ type Handle struct {
 }
 
 // FindByID ...
-func (h Handle) FindByID(ctx context.Context, id primitive.ObjectID) (internal.DBRole, error) {
+func (h Handle) FindByID(ctx context.Context, id primitive.ObjectID) (model.DBRole, error) {
 	role, err := h.findByID(ctx, id)
 	return role, err
 }
 
 // Create ...
-func (h Handle) Create(payload internal.RoleCreateOptions) error {
+func (h Handle) Create(payload model.RoleCreateOptions) error {
 	// TODO later
 	return nil
 }

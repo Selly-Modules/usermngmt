@@ -8,6 +8,7 @@ import (
 	"github.com/Selly-Modules/logger"
 	"github.com/Selly-Modules/mongodb"
 	"github.com/Selly-Modules/usermngmt/internal"
+	"github.com/Selly-Modules/usermngmt/internal/model"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -18,7 +19,7 @@ type Handle struct {
 }
 
 // Create ...
-func (h Handle) Create(payload internal.CreateOptions) error {
+func (h Handle) Create(payload model.CreateOptions) error {
 	var (
 		ctx = context.Background()
 	)
@@ -43,7 +44,7 @@ func (h Handle) Create(payload internal.CreateOptions) error {
 	}
 
 	// New user data from payload
-	doc, err := payload.NewUser()
+	doc, err := newUser(payload)
 	if err != nil {
 		return err
 	}
@@ -56,14 +57,33 @@ func (h Handle) Create(payload internal.CreateOptions) error {
 	return nil
 }
 
+// newUser ...
+func newUser(payload model.CreateOptions) (result model.DBUser, err error) {
+	timeNow := internal.Now()
+	roleID, _ := mongodb.NewIDFromString(payload.RoleID)
+	return model.DBUser{
+		ID:             mongodb.NewObjectID(),
+		Name:           payload.Name,
+		SearchString:   internal.GetSearchString(payload.Name, payload.Phone, payload.Email),
+		Phone:          payload.Phone,
+		Email:          payload.Email,
+		HashedPassword: internal.HashPassword(payload.Password),
+		Status:         payload.Status,
+		RoleID:         roleID,
+		Other:          payload.Other,
+		CreatedAt:      timeNow,
+		UpdatedAt:      timeNow,
+	}, nil
+}
+
 // All ...
-func (h Handle) All(queryParams internal.AllQuery) (r internal.UserAll) {
+func (h Handle) All(queryParams model.AllQuery) (r model.UserAll) {
 	var (
 		ctx  = context.Background()
 		wg   sync.WaitGroup
 		cond = bson.M{}
 	)
-	query := internal.CommonQuery{
+	query := model.CommonQuery{
 		Page:    queryParams.Page,
 		Limit:   queryParams.Limit,
 		Keyword: queryParams.Keyword,
@@ -96,18 +116,18 @@ func (h Handle) All(queryParams internal.AllQuery) (r internal.UserAll) {
 	return
 }
 
-func (h Handle) getResponseList(ctx context.Context, users []internal.DBUser) []internal.User {
-	res := make([]internal.User, 0)
+func (h Handle) getResponseList(ctx context.Context, users []model.DBUser) []model.User {
+	res := make([]model.User, 0)
 
 	for _, user := range users {
 		roleRaw, _ := h.roleFindByID(ctx, user.RoleID)
-		res = append(res, internal.User{
+		res = append(res, model.User{
 			ID:     user.ID.Hex(),
 			Name:   user.Name,
 			Phone:  user.Phone,
 			Email:  user.Email,
 			Status: user.Status,
-			Role: internal.RoleShort{
+			Role: model.RoleShort{
 				ID:      roleRaw.ID.Hex(),
 				Name:    roleRaw.Name,
 				IsAdmin: roleRaw.IsAdmin,
@@ -122,7 +142,7 @@ func (h Handle) getResponseList(ctx context.Context, users []internal.DBUser) []
 }
 
 // UpdateByUserID ...
-func (h Handle) UpdateByUserID(userID string, payload internal.UpdateOptions) error {
+func (h Handle) UpdateByUserID(userID string, payload model.UpdateOptions) error {
 	var (
 		ctx = context.Background()
 	)
@@ -174,7 +194,7 @@ func (h Handle) UpdateByUserID(userID string, payload internal.UpdateOptions) er
 }
 
 // ChangeUserPassword ...
-func (h Handle) ChangeUserPassword(userID string, opt internal.ChangePasswordOptions) error {
+func (h Handle) ChangeUserPassword(userID string, opt model.ChangePasswordOptions) error {
 	var (
 		ctx = context.Background()
 	)
@@ -189,7 +209,7 @@ func (h Handle) ChangeUserPassword(userID string, opt internal.ChangePasswordOpt
 	if _, isValid := mongodb.NewIDFromString(userID); !isValid {
 		logger.Error("usermngmt - ChangePassword: invalid userID data", logger.LogData{
 			"payload": opt,
-			"userID": userID,
+			"userID":  userID,
 		})
 		return errors.New("invalid user id data")
 	}

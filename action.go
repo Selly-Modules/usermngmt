@@ -48,9 +48,9 @@ func (s Service) LoginWithEmailAndPassword(email, password string) (model.User, 
 	return user.LoginWithEmailAndPassword(email, password)
 }
 
-// IsPermission ...
-func (s Service) IsPermission(userID, permission string) bool {
-	return user.IsPermission(userID, permission)
+// HasPermission ...
+func (s Service) HasPermission(userID, permission string) bool {
+	return user.HasPermission(userID, permission)
 }
 
 //

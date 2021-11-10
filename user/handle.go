@@ -320,8 +320,8 @@ func LoginWithEmailAndPassword(email, password string) (result model.User, err e
 	return
 }
 
-// IsPermission ...
-func IsPermission(userID, permission string) (result bool) {
+// HasPermission ...
+func HasPermission(userID, permission string) (result bool) {
 	var (
 		ctx = context.Background()
 	)

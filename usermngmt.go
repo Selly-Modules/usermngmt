@@ -6,6 +6,7 @@ import (
 
 	"github.com/Selly-Modules/mongodb"
 	"github.com/Selly-Modules/usermngmt/database"
+	"github.com/Selly-Modules/usermngmt/internal"
 )
 
 // MongoDBConfig ...
@@ -36,7 +37,7 @@ func Init(config Config) (*Service, error) {
 
 	// If prefixTable is empty then it is usermngmt
 	if config.TablePrefix == "" {
-		config.TablePrefix = tablePrefixDefault
+		config.TablePrefix = internal.TablePrefixDefault
 	}
 
 	// Connect MongoDB

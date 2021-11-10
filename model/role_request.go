@@ -4,4 +4,3 @@ package model
 type RoleCreateOptions struct {
 	Name string
 }
-

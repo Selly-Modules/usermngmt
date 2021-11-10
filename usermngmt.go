@@ -5,7 +5,8 @@ import (
 	"fmt"
 
 	"github.com/Selly-Modules/mongodb"
-	"go.mongodb.org/mongo-driver/mongo"
+	"github.com/Selly-Modules/usermngmt/database"
+	"github.com/Selly-Modules/usermngmt/internal"
 )
 
 // MongoDBConfig ...
@@ -23,8 +24,7 @@ type Config struct {
 
 // Service ...
 type Service struct {
-	Config
-	DB *mongo.Database
+	config Config
 }
 
 var s *Service
@@ -37,7 +37,7 @@ func Init(config Config) (*Service, error) {
 
 	// If prefixTable is empty then it is usermngmt
 	if config.TablePrefix == "" {
-		config.TablePrefix = tablePrefixDefault
+		config.TablePrefix = internal.TablePrefixDefault
 	}
 
 	// Connect MongoDB
@@ -54,9 +54,11 @@ func Init(config Config) (*Service, error) {
 		return nil, err
 	}
 
+	// Set database
+	database.Set(db, config.TablePrefix)
+
 	s = &Service{
-		Config: config,
-		DB:     db,
+		config: config,
 	}
 
 	return s, nil

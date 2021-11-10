@@ -1,4 +1,4 @@
-package usermngmt
+package internal
 
 import (
 	"fmt"
@@ -7,17 +7,20 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func hashPassword(password string) string {
+// HashPassword ...
+func HashPassword(password string) string {
 	bytes, _ := bcrypt.GenerateFromPassword([]byte(password), passwordHashingCost)
 	return string(bytes)
 }
 
-func checkPasswordHash(password, hash string) bool {
+// CheckPasswordHash ...
+func CheckPasswordHash(password, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	return err == nil
 }
 
-func getSearchString(fieldList ...string) string {
+// GetSearchString ...
+func GetSearchString(fieldList ...string) string {
 	var (
 		searchList = make([]interface{}, 0)
 		format     = ""

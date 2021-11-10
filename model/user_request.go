@@ -1,14 +1,48 @@
-package usermngmt
+package model
 
 import (
-	"context"
 	"errors"
 
 	"github.com/Selly-Modules/logger"
-	"github.com/Selly-Modules/mongodb"
 )
 
-func (co CreateOptions) validate(ctx context.Context) error {
+// UserCreateOptions ...
+type UserCreateOptions struct {
+	Name     string
+	Phone    string
+	Email    string
+	Password string
+	Status   string
+	RoleID   string
+	Other    string
+}
+
+// UserUpdateOptions ...
+type UserUpdateOptions struct {
+	Name   string
+	Phone  string
+	Email  string
+	RoleID string
+	Other  string
+}
+
+// ChangePasswordOptions ...
+type ChangePasswordOptions struct {
+	OldPassword string
+	NewPassword string
+}
+
+// UserAllQuery ...
+type UserAllQuery struct {
+	Page    int64
+	Limit   int64
+	Keyword string
+	RoleID  string
+	Status  string
+}
+
+// Validate ...
+func (co UserCreateOptions) Validate() error {
 	// Name
 	if co.Name == "" {
 		logger.Error("usermngmt - Create: no Name data", logger.LogData{
@@ -57,88 +91,54 @@ func (co CreateOptions) validate(ctx context.Context) error {
 		return errors.New("no role id data")
 	}
 
-	//  Find roleID exists or not
-	roleID, isValid := mongodb.NewIDFromString(co.RoleID)
-	if !isValid {
-		return errors.New("invalid role id data")
-	}
-	if !s.isRoleIDExisted(ctx, roleID) {
-		return errors.New("role id does not exist")
-	}
-
-	// Find phone number,email exists or not
-	if s.isPhoneNumberOrEmailExisted(ctx, co.Phone, co.Email) {
-		return errors.New("phone number or email already existed")
-	}
-
 	return nil
 }
 
-func (co UpdateOptions) validate(ctx context.Context) error {
+// Validate ...
+func (uo UserUpdateOptions) Validate() error {
 	// Name
-	if co.Name == "" {
+	if uo.Name == "" {
 		logger.Error("usermngmt - Update: no name data", logger.LogData{
-			"payload": co,
+			"payload": uo,
 		})
 		return errors.New("no name data")
 	}
 
 	// Phone
-	if co.Phone == "" {
+	if uo.Phone == "" {
 		logger.Error("usermngmt - Update: no phone data", logger.LogData{
-			"payload": co,
+			"payload": uo,
 		})
 		return errors.New("no phone data")
 	}
 
 	// Email
-	if co.Email == "" {
+	if uo.Email == "" {
 		logger.Error("usermngmt - Update: no email data", logger.LogData{
-			"payload": co,
+			"payload": uo,
 		})
 		return errors.New("no email data")
 	}
 
 	// RoleID
-	if co.RoleID == "" {
+	if uo.RoleID == "" {
 		logger.Error("usermngmt - Update: no roleID data", logger.LogData{
-			"payload": co,
+			"payload": uo,
 		})
 		return errors.New("no role id data")
-	}
-
-	//  Find roleID exists or not
-	roleID, isValid := mongodb.NewIDFromString(co.RoleID)
-	if !isValid {
-		return errors.New("invalid role id data")
-	}
-	if !s.isRoleIDExisted(ctx, roleID) {
-		return errors.New("role id does not exist")
-	}
-
-	// Find phone number,email exists or not
-	if s.isPhoneNumberOrEmailExisted(ctx, co.Phone, co.Email) {
-		return errors.New("phone number or email already existed")
 	}
 
 	return nil
 }
 
-func (co ChangePasswordOptions) validate(userID string) error {
+// Validate ...
+func (co ChangePasswordOptions) Validate() error {
 	// OldPassword, NewPassword
 	if co.OldPassword == "" || co.NewPassword == "" {
 		logger.Error("usermngmt - ChangePassword: old or new password cannot be empty", logger.LogData{
 			"payload": co,
 		})
 		return errors.New("old or new password cannot be empty")
-	}
-
-	// UserID
-	if _, isValid := mongodb.NewIDFromString(userID); !isValid {
-		logger.Error("usermngmt - ChangePassword: invalid userID data", logger.LogData{
-			"payload": co,
-		})
-		return errors.New("invalid user id data")
 	}
 
 	return nil

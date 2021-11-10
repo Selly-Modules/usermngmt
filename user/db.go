@@ -1,31 +1,21 @@
-package usermngmt
+package user
 
 import (
 	"context"
 	"fmt"
 
 	"github.com/Selly-Modules/logger"
+	"github.com/Selly-Modules/usermngmt/database"
+	"github.com/Selly-Modules/usermngmt/model"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-//  getUserCollection ...
-func (s Service) getUserCollection() *mongo.Collection {
-	return s.DB.Collection(fmt.Sprintf("%s-%s", s.TablePrefix, tableUser))
-}
-
-//  getRoleCollection ...
-func (s Service) getRoleCollection() *mongo.Collection {
-	return s.DB.Collection(fmt.Sprintf("%s-%s", s.TablePrefix, tableRole))
-}
-
-func (s Service) isPhoneNumberOrEmailExisted(ctx context.Context, phone, email string) bool {
+func isPhoneNumberOrEmailExisted(ctx context.Context, phone, email string) bool {
 	var (
-		col = s.getUserCollection()
+		col = database.GetUserCol()
 	)
-
 	// Find
 	cond := bson.M{
 		"$or": []bson.M{
@@ -48,11 +38,10 @@ func (s Service) isPhoneNumberOrEmailExisted(ctx context.Context, phone, email s
 	return total != 0
 }
 
-func (s Service) isRoleIDExisted(ctx context.Context, roleID primitive.ObjectID) bool {
+func isRoleIDExisted(ctx context.Context, roleID primitive.ObjectID) bool {
 	var (
-		col = s.getRoleCollection()
+		col = database.GetRoleCol()
 	)
-
 	// Find
 	cond := bson.M{
 		"_id": roleID,
@@ -68,11 +57,19 @@ func (s Service) isRoleIDExisted(ctx context.Context, roleID primitive.ObjectID)
 	return total != 0
 }
 
-func (s Service) userCreate(ctx context.Context, doc User) error {
+func roleFindByID(ctx context.Context, id primitive.ObjectID) (model.DBRole, error) {
 	var (
-		col = s.getUserCollection()
+		doc model.DBRole
+		col = database.GetRoleCol()
 	)
+	err := col.FindOne(ctx, bson.M{"_id": id}).Decode(&doc)
+	return doc, err
+}
 
+func create(ctx context.Context, doc model.DBUser) error {
+	var (
+		col = database.GetUserCol()
+	)
 	_, err := col.InsertOne(ctx, doc)
 	if err != nil {
 		logger.Error("usermngmt - Create", logger.LogData{
@@ -85,11 +82,10 @@ func (s Service) userCreate(ctx context.Context, doc User) error {
 	return nil
 }
 
-func (s Service) userUpdateOneByCondition(ctx context.Context, cond interface{}, payload interface{}) error {
+func updateOneByCondition(ctx context.Context, cond interface{}, payload interface{}) error {
 	var (
-		col = s.getUserCollection()
+		col = database.GetUserCol()
 	)
-
 	_, err := col.UpdateOne(ctx, cond, payload)
 	if err != nil {
 		logger.Error("usermngmt - Update", logger.LogData{
@@ -103,20 +99,20 @@ func (s Service) userUpdateOneByCondition(ctx context.Context, cond interface{},
 	return err
 }
 
-func (s Service) userFindByID(ctx context.Context, id primitive.ObjectID) (User, error) {
+func findByID(ctx context.Context, id primitive.ObjectID) (model.DBUser, error) {
 	var (
-		col = s.getUserCollection()
-		doc User
+		doc model.DBUser
+		col = database.GetUserCol()
 	)
 	err := col.FindOne(ctx, bson.M{"_id": id}).Decode(&doc)
 	return doc, err
 }
 
-func (s Service) userFindByCondition(ctx context.Context, cond interface{}, opts ...*options.FindOptions) (docs []User) {
+func findByCondition(ctx context.Context, cond interface{}, opts ...*options.FindOptions) (docs []model.DBUser) {
 	var (
-		col = s.getUserCollection()
+		col = database.GetUserCol()
 	)
-	docs = make([]User, 0)
+	docs = make([]model.DBUser, 0)
 
 	cursor, err := col.Find(ctx, cond, opts...)
 	if err != nil {
@@ -139,12 +135,11 @@ func (s Service) userFindByCondition(ctx context.Context, cond interface{}, opts
 	return
 }
 
-// userCountByCondition ...
-func (s Service) userCountByCondition(ctx context.Context, cond interface{}) int64 {
+// countByCondition ...
+func countByCondition(ctx context.Context, cond interface{}) int64 {
 	var (
-		col = s.getUserCollection()
+		col = database.GetUserCol()
 	)
-
 	total, err := col.CountDocuments(ctx, cond)
 	if err != nil {
 		logger.Error("usermngmt - Count", logger.LogData{
@@ -153,13 +148,4 @@ func (s Service) userCountByCondition(ctx context.Context, cond interface{}) int
 		})
 	}
 	return total
-}
-
-func (s Service) roleFindByID(ctx context.Context, id primitive.ObjectID) (Role, error) {
-	var (
-		col = s.getRoleCollection()
-		doc Role
-	)
-	err := col.FindOne(ctx, bson.M{"_id": id}).Decode(&doc)
-	return doc, err
 }

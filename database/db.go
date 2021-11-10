@@ -22,10 +22,12 @@ func Set(instance *mongo.Database, tablePrefix string) {
 	prefix = tablePrefix
 }
 
+// GetUserCol ...
 func GetUserCol() *mongo.Collection {
 	return db.Collection(fmt.Sprintf("%s-%s", prefix, tableUser))
 }
 
+// GetRoleCol ...
 func GetRoleCol() *mongo.Collection {
 	return db.Collection(fmt.Sprintf("%s-%s", prefix, tableRole))
 }

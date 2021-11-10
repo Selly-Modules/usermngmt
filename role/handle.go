@@ -7,17 +7,14 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-type Handle struct {
-}
-
 // FindByID ...
-func (h Handle) FindByID(ctx context.Context, id primitive.ObjectID) (model.DBRole, error) {
-	role, err := h.findByID(ctx, id)
+func FindByID(ctx context.Context, id primitive.ObjectID) (model.DBRole, error) {
+	role, err := findByID(ctx, id)
 	return role, err
 }
 
 // Create ...
-func (h Handle) Create(payload model.RoleCreateOptions) error {
+func Create(payload model.RoleCreateOptions) error {
 	// TODO later
 	return nil
 }

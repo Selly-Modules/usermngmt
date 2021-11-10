@@ -12,11 +12,8 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-type Handle struct {
-}
-
 // Create ...
-func (h Handle) Create(payload model.UserCreateOptions) error {
+func Create(payload model.UserCreateOptions) error {
 	var (
 		ctx = context.Background()
 	)
@@ -31,12 +28,12 @@ func (h Handle) Create(payload model.UserCreateOptions) error {
 	if !isValid {
 		return errors.New("invalid role id data")
 	}
-	if !h.isRoleIDExisted(ctx, roleID) {
+	if !isRoleIDExisted(ctx, roleID) {
 		return errors.New("role id does not exist")
 	}
 
 	// Find phone number,email exists or not
-	if h.isPhoneNumberOrEmailExisted(ctx, payload.Phone, payload.Email) {
+	if isPhoneNumberOrEmailExisted(ctx, payload.Phone, payload.Email) {
 		return errors.New("phone number or email already existed")
 	}
 
@@ -47,7 +44,7 @@ func (h Handle) Create(payload model.UserCreateOptions) error {
 	}
 
 	// Create user
-	if err = h.create(ctx, doc); err != nil {
+	if err = create(ctx, doc); err != nil {
 		return err
 	}
 
@@ -74,7 +71,7 @@ func newUser(payload model.UserCreateOptions) (result model.DBUser, err error) {
 }
 
 // All ...
-func (h Handle) All(queryParams model.UserAllQuery) (r model.UserAll) {
+func All(queryParams model.UserAllQuery) (r model.UserAll) {
 	var (
 		ctx  = context.Background()
 		wg   sync.WaitGroup
@@ -98,14 +95,14 @@ func (h Handle) All(queryParams model.UserAllQuery) (r model.UserAll) {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		docs := h.findByCondition(ctx, cond, query.GetFindOptionsUsingPage())
-		r.List = h.getResponseList(ctx, docs)
+		docs := findByCondition(ctx, cond, query.GetFindOptionsUsingPage())
+		r.List = getResponseList(ctx, docs)
 	}()
 
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		r.Total = h.countByCondition(ctx, cond)
+		r.Total = countByCondition(ctx, cond)
 	}()
 
 	wg.Wait()
@@ -113,11 +110,11 @@ func (h Handle) All(queryParams model.UserAllQuery) (r model.UserAll) {
 	return
 }
 
-func (h Handle) getResponseList(ctx context.Context, users []model.DBUser) []model.User {
+func getResponseList(ctx context.Context, users []model.DBUser) []model.User {
 	res := make([]model.User, 0)
 
 	for _, user := range users {
-		roleRaw, _ := h.roleFindByID(ctx, user.RoleID)
+		roleRaw, _ := roleFindByID(ctx, user.RoleID)
 		res = append(res, model.User{
 			ID:     user.ID.Hex(),
 			Name:   user.Name,
@@ -139,7 +136,7 @@ func (h Handle) getResponseList(ctx context.Context, users []model.DBUser) []mod
 }
 
 // UpdateByUserID ...
-func (h Handle) UpdateByUserID(userID string, payload model.UserUpdateOptions) error {
+func UpdateByUserID(userID string, payload model.UserUpdateOptions) error {
 	var (
 		ctx = context.Background()
 	)
@@ -154,12 +151,12 @@ func (h Handle) UpdateByUserID(userID string, payload model.UserUpdateOptions) e
 	if !isValid {
 		return errors.New("invalid role id data")
 	}
-	if !h.isRoleIDExisted(ctx, roleID) {
+	if !isRoleIDExisted(ctx, roleID) {
 		return errors.New("role id does not exist")
 	}
 
 	// Find phone number,email exists or not
-	if h.isPhoneNumberOrEmailExisted(ctx, payload.Phone, payload.Email) {
+	if isPhoneNumberOrEmailExisted(ctx, payload.Phone, payload.Email) {
 		return errors.New("phone number or email already existed")
 	}
 
@@ -183,7 +180,7 @@ func (h Handle) UpdateByUserID(userID string, payload model.UserUpdateOptions) e
 	}
 
 	// Update
-	if err := h.updateOneByCondition(ctx, cond, updateData); err != nil {
+	if err := updateOneByCondition(ctx, cond, updateData); err != nil {
 		return err
 	}
 
@@ -191,7 +188,7 @@ func (h Handle) UpdateByUserID(userID string, payload model.UserUpdateOptions) e
 }
 
 // ChangeUserPassword ...
-func (h Handle) ChangeUserPassword(userID string, opt model.ChangePasswordOptions) error {
+func ChangeUserPassword(userID string, opt model.ChangePasswordOptions) error {
 	var (
 		ctx = context.Background()
 	)
@@ -213,7 +210,7 @@ func (h Handle) ChangeUserPassword(userID string, opt model.ChangePasswordOption
 
 	// Find user
 	id, _ := mongodb.NewIDFromString(userID)
-	user, _ := h.findByID(ctx, id)
+	user, _ := findByID(ctx, id)
 	if user.ID.IsZero() {
 		return errors.New("user not found")
 	}
@@ -224,7 +221,7 @@ func (h Handle) ChangeUserPassword(userID string, opt model.ChangePasswordOption
 	}
 
 	// Update password
-	if err = h.updateOneByCondition(ctx, bson.M{"_id": user.ID}, bson.M{
+	if err = updateOneByCondition(ctx, bson.M{"_id": user.ID}, bson.M{
 		"$set": bson.M{
 			"hashedPassword": internal.HashPassword(opt.NewPassword),
 			"updatedAt":      internal.Now(),
@@ -237,7 +234,7 @@ func (h Handle) ChangeUserPassword(userID string, opt model.ChangePasswordOption
 }
 
 // ChangeUserStatus ...
-func (h Handle) ChangeUserStatus(userID, newStatus string) error {
+func ChangeUserStatus(userID, newStatus string) error {
 	var (
 		ctx = context.Background()
 	)
@@ -249,7 +246,7 @@ func (h Handle) ChangeUserStatus(userID, newStatus string) error {
 	}
 
 	// Update status
-	if err := h.updateOneByCondition(ctx, bson.M{"_id": id}, bson.M{
+	if err := updateOneByCondition(ctx, bson.M{"_id": id}, bson.M{
 		"$set": bson.M{
 			"status":    newStatus,
 			"updatedAt": internal.Now(),

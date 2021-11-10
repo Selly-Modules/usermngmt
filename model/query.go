@@ -6,6 +6,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+// CommonQuery ...
 type CommonQuery struct {
 	Page    int64
 	Limit   int64
@@ -56,4 +57,3 @@ func (q *CommonQuery) SetDefaultLimit() {
 		q.Limit = 20
 	}
 }
-

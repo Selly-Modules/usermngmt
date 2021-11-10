@@ -12,7 +12,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func (h Handle) isPhoneNumberOrEmailExisted(ctx context.Context, phone, email string) bool {
+func isPhoneNumberOrEmailExisted(ctx context.Context, phone, email string) bool {
 	var (
 		col = database.GetUserCol()
 	)
@@ -38,7 +38,7 @@ func (h Handle) isPhoneNumberOrEmailExisted(ctx context.Context, phone, email st
 	return total != 0
 }
 
-func (h Handle) isRoleIDExisted(ctx context.Context, roleID primitive.ObjectID) bool {
+func isRoleIDExisted(ctx context.Context, roleID primitive.ObjectID) bool {
 	var (
 		col = database.GetRoleCol()
 	)
@@ -57,7 +57,7 @@ func (h Handle) isRoleIDExisted(ctx context.Context, roleID primitive.ObjectID) 
 	return total != 0
 }
 
-func (h Handle) roleFindByID(ctx context.Context, id primitive.ObjectID) (model.DBRole, error) {
+func roleFindByID(ctx context.Context, id primitive.ObjectID) (model.DBRole, error) {
 	var (
 		doc model.DBRole
 		col = database.GetRoleCol()
@@ -66,7 +66,7 @@ func (h Handle) roleFindByID(ctx context.Context, id primitive.ObjectID) (model.
 	return doc, err
 }
 
-func (h Handle) create(ctx context.Context, doc model.DBUser) error {
+func create(ctx context.Context, doc model.DBUser) error {
 	var (
 		col = database.GetUserCol()
 	)
@@ -82,7 +82,7 @@ func (h Handle) create(ctx context.Context, doc model.DBUser) error {
 	return nil
 }
 
-func (h Handle) updateOneByCondition(ctx context.Context, cond interface{}, payload interface{}) error {
+func updateOneByCondition(ctx context.Context, cond interface{}, payload interface{}) error {
 	var (
 		col = database.GetUserCol()
 	)
@@ -99,7 +99,7 @@ func (h Handle) updateOneByCondition(ctx context.Context, cond interface{}, payl
 	return err
 }
 
-func (h Handle) findByID(ctx context.Context, id primitive.ObjectID) (model.DBUser, error) {
+func findByID(ctx context.Context, id primitive.ObjectID) (model.DBUser, error) {
 	var (
 		doc model.DBUser
 		col = database.GetUserCol()
@@ -108,7 +108,7 @@ func (h Handle) findByID(ctx context.Context, id primitive.ObjectID) (model.DBUs
 	return doc, err
 }
 
-func (h Handle) findByCondition(ctx context.Context, cond interface{}, opts ...*options.FindOptions) (docs []model.DBUser) {
+func findByCondition(ctx context.Context, cond interface{}, opts ...*options.FindOptions) (docs []model.DBUser) {
 	var (
 		col = database.GetUserCol()
 	)
@@ -136,7 +136,7 @@ func (h Handle) findByCondition(ctx context.Context, cond interface{}, opts ...*
 }
 
 // countByCondition ...
-func (h Handle) countByCondition(ctx context.Context, cond interface{}) int64 {
+func countByCondition(ctx context.Context, cond interface{}) int64 {
 	var (
 		col = database.GetUserCol()
 	)

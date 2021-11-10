@@ -6,8 +6,6 @@ import (
 
 	"github.com/Selly-Modules/mongodb"
 	"github.com/Selly-Modules/usermngmt/database"
-	"github.com/Selly-Modules/usermngmt/role"
-	"github.com/Selly-Modules/usermngmt/user"
 )
 
 // MongoDBConfig ...
@@ -23,16 +21,9 @@ type Config struct {
 	TablePrefix string
 }
 
-// Handler ...
-type Handler struct {
-	User user.Handle
-	Role role.Handle
-}
-
 // Service ...
 type Service struct {
-	config  Config
-	handler Handler
+	config Config
 }
 
 var s *Service
@@ -67,10 +58,6 @@ func Init(config Config) (*Service, error) {
 
 	s = &Service{
 		config: config,
-		handler: Handler{
-			User: user.Handle{},
-			Role: role.Handle{},
-		},
 	}
 
 	return s, nil

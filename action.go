@@ -2,31 +2,36 @@ package usermngmt
 
 import (
 	"github.com/Selly-Modules/usermngmt/model"
+	"github.com/Selly-Modules/usermngmt/role"
+	"github.com/Selly-Modules/usermngmt/user"
 )
 
 // Create ...
 func (s Service) Create(payload model.UserCreateOptions) error {
-	return s.handler.User.Create(payload)
+	return user.Create(payload)
 }
 
 // Update ...
 func (s Service) Update(userID string, payload model.UserUpdateOptions) error {
-	return s.handler.User.UpdateByUserID(userID, payload)
+	return user.UpdateByUserID(userID, payload)
 }
 
 // ChangeUserPassword ...
 func (s Service) ChangeUserPassword(userID string, payload model.ChangePasswordOptions) error {
-	return s.handler.User.ChangeUserPassword(userID, payload)
+	return user.ChangeUserPassword(userID, payload)
 }
 
+// ChangeUserStatus ...
 func (s Service) ChangeUserStatus(userID, newStatus string) error {
-	return s.handler.User.ChangeUserStatus(userID, newStatus)
+	return user.ChangeUserStatus(userID, newStatus)
 }
 
+// All ...
 func (s Service) All(query model.UserAllQuery) model.UserAll {
-	return s.handler.User.All(query)
+	return user.All(query)
 }
 
+// RoleCreate ...
 func (s Service) RoleCreate(payload model.RoleCreateOptions) error {
-	return s.handler.Role.Create(payload)
+	return role.Create(payload)
 }

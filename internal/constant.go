@@ -6,4 +6,3 @@ const (
 
 	passwordHashingCost = 14
 )
-

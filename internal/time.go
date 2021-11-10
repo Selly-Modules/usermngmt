@@ -18,4 +18,3 @@ func getHCMLocation() *time.Location {
 func Now() time.Time {
 	return time.Now().In(getHCMLocation())
 }
-

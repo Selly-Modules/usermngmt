@@ -33,4 +33,3 @@ func GetSearchString(fieldList ...string) string {
 	}
 	return fmt.Sprintf(format, searchList...)
 }
-

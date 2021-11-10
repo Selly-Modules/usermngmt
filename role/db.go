@@ -9,7 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func (h Handle) findByID(ctx context.Context, id primitive.ObjectID) (model.DBRole, error) {
+func findByID(ctx context.Context, id primitive.ObjectID) (model.DBRole, error) {
 	var (
 		doc model.DBRole
 		col = database.GetRoleCol()

@@ -1,5 +1,6 @@
 package model
 
+// RoleShort ...
 type RoleShort struct {
 	ID      string `json:"_id"`
 	Name    string `json:"name"`

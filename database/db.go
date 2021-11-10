@@ -8,8 +8,9 @@ import (
 
 // Table
 var (
-	tableUser = "users"
-	tableRole = "roles"
+	tableUser       = "users"
+	tableRole       = "roles"
+	tablePermission = "permissions"
 )
 
 var (
@@ -31,4 +32,9 @@ func GetUserCol() *mongo.Collection {
 // GetRoleCol ...
 func GetRoleCol() *mongo.Collection {
 	return db.Collection(fmt.Sprintf("%s-%s", prefix, tableRole))
+}
+
+// GetPermissionCol ...
+func GetPermissionCol() *mongo.Collection {
+	return db.Collection(fmt.Sprintf("%s-%s", prefix, tablePermission))
 }

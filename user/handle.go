@@ -96,7 +96,11 @@ func All(queryParams model.UserAllQuery) (r model.UserAll) {
 	go func() {
 		defer wg.Done()
 		docs := findByCondition(ctx, cond, query.GetFindOptionsUsingPage())
-		r.List = getResponseList(ctx, docs)
+		res := make([]model.User, 0)
+		for _, doc := range docs {
+			res = append(res, getResponse(ctx, doc))
+		}
+		r.List = res
 	}()
 
 	wg.Add(1)
@@ -110,29 +114,23 @@ func All(queryParams model.UserAllQuery) (r model.UserAll) {
 	return
 }
 
-func getResponseList(ctx context.Context, users []model.DBUser) []model.User {
-	res := make([]model.User, 0)
-
-	for _, user := range users {
-		roleRaw, _ := roleFindByID(ctx, user.RoleID)
-		res = append(res, model.User{
-			ID:     user.ID.Hex(),
-			Name:   user.Name,
-			Phone:  user.Phone,
-			Email:  user.Email,
-			Status: user.Status,
-			Role: model.RoleShort{
-				ID:      roleRaw.ID.Hex(),
-				Name:    roleRaw.Name,
-				IsAdmin: roleRaw.IsAdmin,
-			},
-			Other:     user.Other,
-			CreatedAt: user.CreatedAt,
-			UpdatedAt: user.UpdatedAt,
-		})
+func getResponse(ctx context.Context, user model.DBUser) model.User {
+	roleRaw, _ := roleFindByID(ctx, user.RoleID)
+	return model.User{
+		ID:     user.ID.Hex(),
+		Name:   user.Name,
+		Phone:  user.Phone,
+		Email:  user.Email,
+		Status: user.Status,
+		Role: model.RoleShort{
+			ID:      roleRaw.ID.Hex(),
+			Name:    roleRaw.Name,
+			IsAdmin: roleRaw.IsAdmin,
+		},
+		Other:     user.Other,
+		CreatedAt: user.CreatedAt,
+		UpdatedAt: user.UpdatedAt,
 	}
-
-	return res
 }
 
 // UpdateByUserID ...
@@ -289,4 +287,35 @@ func ChangeAllUsersStatus(roleID, status string) error {
 	}
 
 	return nil
+}
+
+// LoginWithEmailAndPassword ...
+func LoginWithEmailAndPassword(email, password string) (result model.User, err error) {
+	var (
+		ctx = context.Background()
+	)
+
+	// Validate email, password
+	if email == "" || password == "" {
+		err = errors.New("email or password cannot be empty")
+		return
+	}
+
+	// Find user
+	user, _ := findOneByCondition(ctx, bson.M{
+		"email": email,
+	})
+	if user.ID.IsZero() {
+		err = errors.New("user not found")
+		return
+	}
+
+	// Check Password
+	if !internal.CheckPasswordHash(password, user.HashedPassword) {
+		err = errors.New("the password is incorrect")
+		return
+	}
+
+	result = getResponse(ctx, user)
+	return
 }

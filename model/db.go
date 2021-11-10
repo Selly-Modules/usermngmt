@@ -30,3 +30,14 @@ type DBUser struct {
 	CreatedAt      time.Time          `bson:"createdAt"`
 	UpdatedAt      time.Time          `bson:"updatedAt"`
 }
+
+// DBPermission ...
+type DBPermission struct {
+	ID        primitive.ObjectID `bson:"_id"`
+	Name      string             `bson:"name"`
+	Code      string             `bson:"code"`
+	RoleID    primitive.ObjectID `bson:"roleId"`
+	Desc      string             `bson:"desc"`
+	CreatedAt time.Time          `bson:"createdAt"`
+	UpdatedAt time.Time          `bson:"updatedAt"`
+}

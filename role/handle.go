@@ -39,7 +39,7 @@ func newRole(payload model.RoleCreateOptions) model.DBRole {
 	return model.DBRole{
 		ID:        mongodb.NewObjectID(),
 		Name:      payload.Name,
-		Code:      internal.GetCode(payload.Name),
+		Code:      internal.GenerateCode(payload.Name),
 		CreatedAt: timeNow,
 		UpdatedAt: timeNow,
 	}
@@ -71,7 +71,7 @@ func Update(roleID string, payload model.RoleUpdateOptions) error {
 	updateData := bson.M{
 		"$set": bson.M{
 			"name":      payload.Name,
-			"code":      internal.GetCode(payload.Name),
+			"code":      internal.GenerateCode(payload.Name),
 			"updatedAt": internal.Now(),
 		},
 	}

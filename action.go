@@ -58,7 +58,7 @@ func (s Service) UpdateRole(roleID string, payload model.RoleUpdateOptions) erro
 	return role.Update(roleID, payload)
 }
 
-// GetAllRole ...
-func (s Service) GetAllRole(query model.RoleAllQuery) model.RoleAll {
+// GetAllRoles ...
+func (s Service) GetAllRoles(query model.RoleAllQuery) model.RoleAll {
 	return role.All(query)
 }

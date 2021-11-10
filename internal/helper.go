@@ -38,10 +38,11 @@ func GetSearchString(fieldList ...string) string {
 	return fmt.Sprintf(format, searchList...)
 }
 
-// GetCode ...
-func GetCode(s string) string {
+// GenerateCode ...
+func GenerateCode(s string) string {
 	var (
 		underscore = "_"
+		emptySpace = " "
 	)
-	return strings.ReplaceAll(mongodb.NonAccentVietnamese(s), " ", underscore)
+	return strings.ReplaceAll(mongodb.NonAccentVietnamese(s), emptySpace, underscore)
 }

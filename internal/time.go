@@ -1,4 +1,4 @@
-package usermngmt
+package internal
 
 import "time"
 
@@ -14,7 +14,8 @@ func getHCMLocation() *time.Location {
 	return l
 }
 
-// now ...
-func now() time.Time {
+// Now ...
+func Now() time.Time {
 	return time.Now().In(getHCMLocation())
 }
+

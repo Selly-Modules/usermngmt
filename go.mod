@@ -1,4 +1,4 @@
-module github.com/selly-Modules/usermngmt
+module github.com/Selly-Modules/usermngmt
 
 go 1.17
 

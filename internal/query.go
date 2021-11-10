@@ -1,4 +1,4 @@
-package usermngmt
+package internal
 
 import (
 	"github.com/Selly-Modules/mongodb"
@@ -6,7 +6,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-type commonQuery struct {
+type CommonQuery struct {
 	Page    int64
 	Limit   int64
 	Keyword string
@@ -16,14 +16,14 @@ type commonQuery struct {
 }
 
 // AssignKeyword ...
-func (q *commonQuery) AssignKeyword(cond bson.M) {
+func (q *CommonQuery) AssignKeyword(cond bson.M) {
 	if q.Keyword != "" {
 		cond["searchString"] = mongodb.GenerateQuerySearchString(q.Keyword)
 	}
 }
 
 // AssignRoleID ...
-func (q *commonQuery) AssignRoleID(cond bson.M) {
+func (q *CommonQuery) AssignRoleID(cond bson.M) {
 	if q.RoleID != "" {
 		if id, isValid := mongodb.NewIDFromString(q.RoleID); isValid {
 			cond["roleId"] = id
@@ -32,14 +32,14 @@ func (q *commonQuery) AssignRoleID(cond bson.M) {
 }
 
 // AssignStatus ...
-func (q *commonQuery) AssignStatus(cond bson.M) {
+func (q *CommonQuery) AssignStatus(cond bson.M) {
 	if q.Status != "" {
 		cond["status"] = q.Status
 	}
 }
 
 // GetFindOptionsUsingPage ...
-func (q *commonQuery) GetFindOptionsUsingPage() *options.FindOptions {
+func (q *CommonQuery) GetFindOptionsUsingPage() *options.FindOptions {
 	opts := options.Find()
 	if q.Limit > 0 {
 		opts.SetLimit(q.Limit).SetSkip(q.Limit * q.Page)
@@ -51,8 +51,9 @@ func (q *commonQuery) GetFindOptionsUsingPage() *options.FindOptions {
 }
 
 // SetDefaultLimit ...
-func (q *commonQuery) SetDefaultLimit() {
+func (q *CommonQuery) SetDefaultLimit() {
 	if q.Limit <= 0 || q.Limit > 20 {
 		q.Limit = 20
 	}
 }
+

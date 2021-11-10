@@ -1,4 +1,4 @@
-package usermngmt
+package internal
 
 import (
 	"time"
@@ -6,8 +6,18 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-// dbUser ...
-type dbUser struct {
+// DBRole ...
+type DBRole struct {
+	ID        primitive.ObjectID `bson:"_id" json:"_id"`
+	Name      string             `bson:"name" json:"name"`
+	Code      string             `bson:"code" json:"code"`
+	IsAdmin   bool               `bson:"isAdmin" json:"isAdmin"`
+	CreatedAt time.Time          `bson:"createdAt" json:"createdAt"`
+	UpdatedAt time.Time          `bson:"updatedAt" json:"updatedAt"`
+}
+
+// DBUser ...
+type DBUser struct {
 	ID             primitive.ObjectID `bson:"_id"`
 	Name           string             `bson:"name"`
 	SearchString   string             `bson:"searchString"`
@@ -21,12 +31,3 @@ type dbUser struct {
 	UpdatedAt      time.Time          `bson:"updatedAt"`
 }
 
-// dbRole ...
-type dbRole struct {
-	ID        primitive.ObjectID `bson:"_id" json:"_id"`
-	Name      string             `bson:"name" json:"name"`
-	Code      string             `bson:"code" json:"code"`
-	IsAdmin   bool               `bson:"isAdmin" json:"isAdmin"`
-	CreatedAt time.Time          `bson:"createdAt" json:"createdAt"`
-	UpdatedAt time.Time          `bson:"updatedAt" json:"updatedAt"`
-}

@@ -8,12 +8,12 @@ import (
 
 // DBRole ...
 type DBRole struct {
-	ID        primitive.ObjectID `bson:"_id" json:"_id"`
-	Name      string             `bson:"name" json:"name"`
-	Code      string             `bson:"code" json:"code"`
-	IsAdmin   bool               `bson:"isAdmin" json:"isAdmin"`
-	CreatedAt time.Time          `bson:"createdAt" json:"createdAt"`
-	UpdatedAt time.Time          `bson:"updatedAt" json:"updatedAt"`
+	ID        primitive.ObjectID `bson:"_id"`
+	Name      string             `bson:"name"`
+	Code      string             `bson:"code"`
+	IsAdmin   bool               `bson:"isAdmin"`
+	CreatedAt time.Time          `bson:"createdAt"`
+	UpdatedAt time.Time          `bson:"updatedAt"`
 }
 
 // DBUser ...

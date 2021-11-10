@@ -45,7 +45,7 @@ type UserAllQuery struct {
 func (co UserCreateOptions) Validate() error {
 	// Name
 	if co.Name == "" {
-		logger.Error("usermngmt - Create: no Name data", logger.LogData{
+		logger.Error("usermngmt - User - Create: no name data", logger.LogData{
 			"payload": co,
 		})
 		return errors.New("no name data")
@@ -53,7 +53,7 @@ func (co UserCreateOptions) Validate() error {
 
 	// Phone
 	if co.Phone == "" {
-		logger.Error("usermngmt - Create: no phone data", logger.LogData{
+		logger.Error("usermngmt - User - Create: no phone data", logger.LogData{
 			"payload": co,
 		})
 		return errors.New("no phone data")
@@ -61,7 +61,7 @@ func (co UserCreateOptions) Validate() error {
 
 	// Email
 	if co.Email == "" {
-		logger.Error("usermngmt - Create: no email data", logger.LogData{
+		logger.Error("usermngmt - User - Create: no email data", logger.LogData{
 			"payload": co,
 		})
 		return errors.New("no email data")
@@ -69,7 +69,7 @@ func (co UserCreateOptions) Validate() error {
 
 	// Password
 	if co.Password == "" {
-		logger.Error("usermngmt - Create: no password data", logger.LogData{
+		logger.Error("usermngmt - User - Create: no password data", logger.LogData{
 			"payload": co,
 		})
 		return errors.New("no password data")
@@ -77,7 +77,7 @@ func (co UserCreateOptions) Validate() error {
 
 	// Status
 	if co.Status == "" {
-		logger.Error("usermngmt - Create: no status data", logger.LogData{
+		logger.Error("usermngmt - User - Create: no status data", logger.LogData{
 			"payload": co,
 		})
 		return errors.New("no status data")
@@ -85,7 +85,7 @@ func (co UserCreateOptions) Validate() error {
 
 	// RoleID
 	if co.RoleID == "" {
-		logger.Error("usermngmt - Create: no roleID data", logger.LogData{
+		logger.Error("usermngmt - User - Create: no roleID data", logger.LogData{
 			"payload": co,
 		})
 		return errors.New("no role id data")
@@ -98,7 +98,7 @@ func (co UserCreateOptions) Validate() error {
 func (uo UserUpdateOptions) Validate() error {
 	// Name
 	if uo.Name == "" {
-		logger.Error("usermngmt - Update: no name data", logger.LogData{
+		logger.Error("usermngmt - User - Update: no name data", logger.LogData{
 			"payload": uo,
 		})
 		return errors.New("no name data")
@@ -106,7 +106,7 @@ func (uo UserUpdateOptions) Validate() error {
 
 	// Phone
 	if uo.Phone == "" {
-		logger.Error("usermngmt - Update: no phone data", logger.LogData{
+		logger.Error("usermngmt - User - Update: no phone data", logger.LogData{
 			"payload": uo,
 		})
 		return errors.New("no phone data")
@@ -114,7 +114,7 @@ func (uo UserUpdateOptions) Validate() error {
 
 	// Email
 	if uo.Email == "" {
-		logger.Error("usermngmt - Update: no email data", logger.LogData{
+		logger.Error("usermngmt - User - Update: no email data", logger.LogData{
 			"payload": uo,
 		})
 		return errors.New("no email data")
@@ -122,7 +122,7 @@ func (uo UserUpdateOptions) Validate() error {
 
 	// RoleID
 	if uo.RoleID == "" {
-		logger.Error("usermngmt - Update: no roleID data", logger.LogData{
+		logger.Error("usermngmt - User - Update: no roleID data", logger.LogData{
 			"payload": uo,
 		})
 		return errors.New("no role id data")
@@ -135,7 +135,7 @@ func (uo UserUpdateOptions) Validate() error {
 func (co ChangePasswordOptions) Validate() error {
 	// OldPassword, NewPassword
 	if co.OldPassword == "" || co.NewPassword == "" {
-		logger.Error("usermngmt - ChangePassword: old or new password cannot be empty", logger.LogData{
+		logger.Error("usermngmt - User - ChangePassword: old or new password cannot be empty", logger.LogData{
 			"payload": co,
 		})
 		return errors.New("old or new password cannot be empty")

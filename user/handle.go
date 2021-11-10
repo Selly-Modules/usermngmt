@@ -8,18 +8,15 @@ import (
 	"github.com/Selly-Modules/logger"
 	"github.com/Selly-Modules/mongodb"
 	"github.com/Selly-Modules/usermngmt/internal"
-	"github.com/Selly-Modules/usermngmt/internal/model"
+	"github.com/Selly-Modules/usermngmt/model"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type Handle struct {
-	Col     *mongo.Collection
-	RoleCol *mongo.Collection
 }
 
 // Create ...
-func (h Handle) Create(payload model.CreateOptions) error {
+func (h Handle) Create(payload model.UserCreateOptions) error {
 	var (
 		ctx = context.Background()
 	)
@@ -58,7 +55,7 @@ func (h Handle) Create(payload model.CreateOptions) error {
 }
 
 // newUser ...
-func newUser(payload model.CreateOptions) (result model.DBUser, err error) {
+func newUser(payload model.UserCreateOptions) (result model.DBUser, err error) {
 	timeNow := internal.Now()
 	roleID, _ := mongodb.NewIDFromString(payload.RoleID)
 	return model.DBUser{
@@ -77,7 +74,7 @@ func newUser(payload model.CreateOptions) (result model.DBUser, err error) {
 }
 
 // All ...
-func (h Handle) All(queryParams model.AllQuery) (r model.UserAll) {
+func (h Handle) All(queryParams model.UserAllQuery) (r model.UserAll) {
 	var (
 		ctx  = context.Background()
 		wg   sync.WaitGroup
@@ -142,7 +139,7 @@ func (h Handle) getResponseList(ctx context.Context, users []model.DBUser) []mod
 }
 
 // UpdateByUserID ...
-func (h Handle) UpdateByUserID(userID string, payload model.UpdateOptions) error {
+func (h Handle) UpdateByUserID(userID string, payload model.UserUpdateOptions) error {
 	var (
 		ctx = context.Background()
 	)

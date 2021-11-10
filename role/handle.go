@@ -3,13 +3,11 @@ package role
 import (
 	"context"
 
-	"github.com/Selly-Modules/usermngmt/internal/model"
+	"github.com/Selly-Modules/usermngmt/model"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type Handle struct {
-	Col *mongo.Collection
 }
 
 // FindByID ...

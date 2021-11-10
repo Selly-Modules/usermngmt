@@ -5,13 +5,17 @@ import (
 	"fmt"
 
 	"github.com/Selly-Modules/logger"
-	"github.com/Selly-Modules/usermngmt/internal/model"
+	"github.com/Selly-Modules/usermngmt/database"
+	"github.com/Selly-Modules/usermngmt/model"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func (h Handle) isPhoneNumberOrEmailExisted(ctx context.Context, phone, email string) bool {
+	var (
+		col = database.GetUserCol()
+	)
 	// Find
 	cond := bson.M{
 		"$or": []bson.M{
@@ -23,7 +27,7 @@ func (h Handle) isPhoneNumberOrEmailExisted(ctx context.Context, phone, email st
 			},
 		},
 	}
-	total, err := h.Col.CountDocuments(ctx, cond)
+	total, err := col.CountDocuments(ctx, cond)
 	if err != nil {
 		logger.Error("usermngmt - countUserByCondition", logger.LogData{
 			"condition": cond,
@@ -35,11 +39,14 @@ func (h Handle) isPhoneNumberOrEmailExisted(ctx context.Context, phone, email st
 }
 
 func (h Handle) isRoleIDExisted(ctx context.Context, roleID primitive.ObjectID) bool {
+	var (
+		col = database.GetRoleCol()
+	)
 	// Find
 	cond := bson.M{
 		"_id": roleID,
 	}
-	total, err := h.RoleCol.CountDocuments(ctx, cond)
+	total, err := col.CountDocuments(ctx, cond)
 	if err != nil {
 		logger.Error("usermngmt - countRoleByCondition", logger.LogData{
 			"condition": cond,
@@ -53,13 +60,17 @@ func (h Handle) isRoleIDExisted(ctx context.Context, roleID primitive.ObjectID) 
 func (h Handle) roleFindByID(ctx context.Context, id primitive.ObjectID) (model.DBRole, error) {
 	var (
 		doc model.DBRole
+		col = database.GetRoleCol()
 	)
-	err := h.RoleCol.FindOne(ctx, bson.M{"_id": id}).Decode(&doc)
+	err := col.FindOne(ctx, bson.M{"_id": id}).Decode(&doc)
 	return doc, err
 }
 
 func (h Handle) create(ctx context.Context, doc model.DBUser) error {
-	_, err := h.Col.InsertOne(ctx, doc)
+	var (
+		col = database.GetUserCol()
+	)
+	_, err := col.InsertOne(ctx, doc)
 	if err != nil {
 		logger.Error("usermngmt - Create", logger.LogData{
 			"doc": doc,
@@ -72,7 +83,10 @@ func (h Handle) create(ctx context.Context, doc model.DBUser) error {
 }
 
 func (h Handle) updateOneByCondition(ctx context.Context, cond interface{}, payload interface{}) error {
-	_, err := h.Col.UpdateOne(ctx, cond, payload)
+	var (
+		col = database.GetUserCol()
+	)
+	_, err := col.UpdateOne(ctx, cond, payload)
 	if err != nil {
 		logger.Error("usermngmt - Update", logger.LogData{
 			"cond":    cond,
@@ -88,15 +102,19 @@ func (h Handle) updateOneByCondition(ctx context.Context, cond interface{}, payl
 func (h Handle) findByID(ctx context.Context, id primitive.ObjectID) (model.DBUser, error) {
 	var (
 		doc model.DBUser
+		col = database.GetUserCol()
 	)
-	err := h.Col.FindOne(ctx, bson.M{"_id": id}).Decode(&doc)
+	err := col.FindOne(ctx, bson.M{"_id": id}).Decode(&doc)
 	return doc, err
 }
 
 func (h Handle) findByCondition(ctx context.Context, cond interface{}, opts ...*options.FindOptions) (docs []model.DBUser) {
+	var (
+		col = database.GetUserCol()
+	)
 	docs = make([]model.DBUser, 0)
 
-	cursor, err := h.Col.Find(ctx, cond, opts...)
+	cursor, err := col.Find(ctx, cond, opts...)
 	if err != nil {
 		logger.Error("usermngmt - All", logger.LogData{
 			"cond": cond,
@@ -119,7 +137,10 @@ func (h Handle) findByCondition(ctx context.Context, cond interface{}, opts ...*
 
 // countByCondition ...
 func (h Handle) countByCondition(ctx context.Context, cond interface{}) int64 {
-	total, err := h.Col.CountDocuments(ctx, cond)
+	var (
+		col = database.GetUserCol()
+	)
+	total, err := col.CountDocuments(ctx, cond)
 	if err != nil {
 		logger.Error("usermngmt - Count", logger.LogData{
 			"err":  err.Error(),

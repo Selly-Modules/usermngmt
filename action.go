@@ -1,16 +1,16 @@
 package usermngmt
 
 import (
-	"github.com/Selly-Modules/usermngmt/internal/model"
+	"github.com/Selly-Modules/usermngmt/model"
 )
 
 // Create ...
-func (s Service) Create(payload model.CreateOptions) error {
+func (s Service) Create(payload model.UserCreateOptions) error {
 	return s.handler.User.Create(payload)
 }
 
 // Update ...
-func (s Service) Update(userID string, payload model.UpdateOptions) error {
+func (s Service) Update(userID string, payload model.UserUpdateOptions) error {
 	return s.handler.User.UpdateByUserID(userID, payload)
 }
 
@@ -23,7 +23,7 @@ func (s Service) ChangeUserStatus(userID, newStatus string) error {
 	return s.handler.User.ChangeUserStatus(userID, newStatus)
 }
 
-func (s Service) All(query model.AllQuery) model.UserAll {
+func (s Service) All(query model.UserAllQuery) model.UserAll {
 	return s.handler.User.All(query)
 }
 

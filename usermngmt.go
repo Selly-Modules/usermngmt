@@ -5,9 +5,9 @@ import (
 	"fmt"
 
 	"github.com/Selly-Modules/mongodb"
+	"github.com/Selly-Modules/usermngmt/database"
 	"github.com/Selly-Modules/usermngmt/role"
 	"github.com/Selly-Modules/usermngmt/user"
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
 // MongoDBConfig ...
@@ -32,7 +32,6 @@ type Handler struct {
 // Service ...
 type Service struct {
 	config  Config
-	db      *mongo.Database
 	handler Handler
 }
 
@@ -63,19 +62,14 @@ func Init(config Config) (*Service, error) {
 		return nil, err
 	}
 
+	// Set database
+	database.Set(db, config.TablePrefix)
+
 	s = &Service{
 		config: config,
-		db:     db,
-	}
-
-	// Setup handle
-	s.handler = Handler{
-		User: user.Handle{
-			Col:     s.getCollectionName(config.TablePrefix, tableUser),
-			RoleCol: s.getCollectionName(config.TablePrefix, tableRole),
-		},
-		Role: role.Handle{
-			Col: s.getCollectionName(config.TablePrefix, tableRole),
+		handler: Handler{
+			User: user.Handle{},
+			Role: role.Handle{},
 		},
 	}
 

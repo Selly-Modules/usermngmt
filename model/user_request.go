@@ -2,13 +2,12 @@ package model
 
 import (
 	"errors"
-	"time"
 
 	"github.com/Selly-Modules/logger"
 )
 
-// CreateOptions ...
-type CreateOptions struct {
+// UserCreateOptions ...
+type UserCreateOptions struct {
 	Name     string
 	Phone    string
 	Email    string
@@ -18,8 +17,8 @@ type CreateOptions struct {
 	Other    string
 }
 
-// UpdateOptions ...
-type UpdateOptions struct {
+// UserUpdateOptions ...
+type UserUpdateOptions struct {
 	Name   string
 	Phone  string
 	Email  string
@@ -33,8 +32,8 @@ type ChangePasswordOptions struct {
 	NewPassword string
 }
 
-// AllQuery ...
-type AllQuery struct {
+// UserAllQuery ...
+type UserAllQuery struct {
 	Page    int64
 	Limit   int64
 	Keyword string
@@ -42,29 +41,8 @@ type AllQuery struct {
 	Status  string
 }
 
-// User ...
-type User struct {
-	ID        string    `json:"_id"`
-	Name      string    `json:"name"`
-	Phone     string    `json:"phone"`
-	Email     string    `json:"email"`
-	Status    string    `json:"status"`
-	Role      RoleShort `json:"role"`
-	Other     string    `json:"other"`
-	CreatedAt time.Time `json:"createdAt"`
-	UpdatedAt time.Time `json:"updatedAt"`
-}
-
-type (
-	// UserAll ...
-	UserAll struct {
-		List  []User `json:"list"`
-		Total int64  `json:"total"`
-	}
-)
-
 // Validate ...
-func (co CreateOptions) Validate() error {
+func (co UserCreateOptions) Validate() error {
 	// Name
 	if co.Name == "" {
 		logger.Error("usermngmt - Create: no Name data", logger.LogData{
@@ -117,7 +95,7 @@ func (co CreateOptions) Validate() error {
 }
 
 // Validate ...
-func (uo UpdateOptions) Validate() error {
+func (uo UserUpdateOptions) Validate() error {
 	// Name
 	if uo.Name == "" {
 		logger.Error("usermngmt - Update: no name data", logger.LogData{

@@ -5,8 +5,3 @@ type RoleShort struct {
 	Name    string `json:"name"`
 	IsAdmin bool   `json:"isAdmin"`
 }
-
-// RoleCreateOptions ...
-type RoleCreateOptions struct {
-	Name string
-}

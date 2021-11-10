@@ -17,6 +17,7 @@ var (
 	prefix string
 )
 
+// Set ...
 func Set(instance *mongo.Database, tablePrefix string) {
 	db = instance
 	prefix = tablePrefix

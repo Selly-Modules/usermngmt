@@ -7,16 +7,19 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// HashPassword ...
 func HashPassword(password string) string {
 	bytes, _ := bcrypt.GenerateFromPassword([]byte(password), passwordHashingCost)
 	return string(bytes)
 }
 
+// CheckPasswordHash ...
 func CheckPasswordHash(password, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	return err == nil
 }
 
+// GetSearchString ...
 func GetSearchString(fieldList ...string) string {
 	var (
 		searchList = make([]interface{}, 0)

@@ -2,6 +2,7 @@ package usermngmt
 
 import (
 	"github.com/Selly-Modules/usermngmt/model"
+	"github.com/Selly-Modules/usermngmt/permission"
 	"github.com/Selly-Modules/usermngmt/role"
 	"github.com/Selly-Modules/usermngmt/user"
 )
@@ -42,6 +43,11 @@ func (s Service) ChangeAllUsersStatus(roleID, status string) error {
 	return user.ChangeAllUsersStatus(roleID, status)
 }
 
+// LoginWithEmailAndPassword ...
+func (s Service) LoginWithEmailAndPassword(email, password string) (model.User, error) {
+	return user.LoginWithEmailAndPassword(email, password)
+}
+
 //
 // Role
 //
@@ -61,4 +67,25 @@ func (s Service) UpdateRole(roleID string, payload model.RoleUpdateOptions) erro
 // GetAllRoles ...
 func (s Service) GetAllRoles(query model.RoleAllQuery) model.RoleAll {
 	return role.All(query)
+}
+
+//
+// Permission
+//
+
+// permission methods
+
+// CreatePermission ...
+func (s Service) CreatePermission(payload model.PermissionCreateOptions) error {
+	return permission.Create(payload)
+}
+
+// UpdatePermission ...
+func (s Service) UpdatePermission(permissionID string, payload model.PermissionUpdateOptions) error {
+	return permission.Update(permissionID, payload)
+}
+
+// GetAllPermissions ...
+func (s Service) GetAllPermissions(query model.PermissionAllQuery) model.PermissionAll {
+	return permission.All(query)
 }

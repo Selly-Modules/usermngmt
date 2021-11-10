@@ -166,3 +166,12 @@ func countByCondition(ctx context.Context, cond interface{}) int64 {
 	}
 	return total
 }
+
+func findOneByCondition(ctx context.Context, cond interface{}) (model.DBUser, error) {
+	var (
+		col = database.GetUserCol()
+		doc model.DBUser
+	)
+	err := col.FindOne(ctx, cond).Decode(&doc)
+	return doc, err
+}

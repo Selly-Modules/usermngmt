@@ -319,3 +319,54 @@ func LoginWithEmailAndPassword(email, password string) (result model.User, err e
 	result = getResponse(ctx, user)
 	return
 }
+
+// IsPermission ...
+func IsPermission(userID, permission string) (result bool) {
+	var (
+		ctx = context.Background()
+	)
+
+	// Validate userID, permission
+	if userID == "" || permission == "" {
+		logger.Error("usermngmt - IsPermission: email or password cannot be empty", logger.LogData{
+			"userID":     userID,
+			"permission": permission,
+		})
+		return
+	}
+	id, isValid := mongodb.NewIDFromString(userID)
+	if !isValid {
+		logger.Error("usermngmt - IsPermission: invalid user id", logger.LogData{
+			"userID":     userID,
+			"permission": permission,
+		})
+		return
+	}
+
+	// Find user
+	user, _ := findByID(ctx, id)
+	if user.ID.IsZero() {
+		logger.Error("usermngmt - IsPermission: user not found", logger.LogData{
+			"userID":     userID,
+			"permission": permission,
+		})
+		return
+	}
+
+	// Check isAdmin
+	if role, _ := roleFindByID(ctx, user.RoleID); role.IsAdmin {
+		result = true
+		return
+	}
+
+	// Check permission
+	if total := permissionCountByCondition(ctx, bson.M{
+		"roleId": user.RoleID,
+		"code":   permission,
+	}); total > 0 {
+		result = true
+		return
+	}
+
+	return
+}

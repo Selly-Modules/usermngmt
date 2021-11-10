@@ -66,6 +66,21 @@ func roleFindByID(ctx context.Context, id primitive.ObjectID) (model.DBRole, err
 	return doc, err
 }
 
+// permissionCountByCondition ...
+func permissionCountByCondition(ctx context.Context, cond interface{}) int64 {
+	var (
+		col = database.GetPermissionCol()
+	)
+	total, err := col.CountDocuments(ctx, cond)
+	if err != nil {
+		logger.Error("usermngmt - Permission - CountDocuments", logger.LogData{
+			"err":  err.Error(),
+			"cond": cond,
+		})
+	}
+	return total
+}
+
 func create(ctx context.Context, doc model.DBUser) error {
 	var (
 		col = database.GetUserCol()

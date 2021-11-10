@@ -33,8 +33,8 @@ func (s Service) ChangeUserStatus(userID, newStatus string) error {
 	return user.ChangeUserStatus(userID, newStatus)
 }
 
-// GetAllUser ...
-func (s Service) GetAllUser(query model.UserAllQuery) model.UserAll {
+// GetAllUsers ...
+func (s Service) GetAllUsers(query model.UserAllQuery) model.UserAll {
 	return user.All(query)
 }
 
@@ -46,6 +46,11 @@ func (s Service) ChangeAllUsersStatus(roleID, status string) error {
 // LoginWithEmailAndPassword ...
 func (s Service) LoginWithEmailAndPassword(email, password string) (model.User, error) {
 	return user.LoginWithEmailAndPassword(email, password)
+}
+
+// IsPermission ...
+func (s Service) IsPermission(userID, permission string) bool {
+	return user.IsPermission(userID, permission)
 }
 
 //

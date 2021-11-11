@@ -3,15 +3,11 @@ package role
 import (
 	"context"
 	"errors"
-	"strings"
 	"sync"
 
-	"github.com/Selly-Modules/logger"
 	"github.com/Selly-Modules/mongodb"
-	"github.com/Selly-Modules/usermngmt/cache"
 	"github.com/Selly-Modules/usermngmt/internal"
 	"github.com/Selly-Modules/usermngmt/model"
-	"github.com/thoas/go-funk"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
@@ -135,50 +131,4 @@ func getResponseList(roles []model.DBRole) []model.Role {
 	}
 
 	return res
-}
-
-// CacheRoles ...
-func CacheRoles() {
-	var (
-		ctx = context.Background()
-		wg  sync.WaitGroup
-	)
-
-	// Find
-	roles := findByCondition(ctx, bson.M{})
-
-	wg.Add(len(roles))
-	for _, value := range roles {
-		go func(role model.DBRole) {
-			defer wg.Done()
-
-			// Check and set role admin: admin
-			if role.IsAdmin {
-				if err := cache.GetInstance().Set(role.ID.Hex(), []byte(internal.RoleTypeAdmin)); err != nil {
-					logger.Error("usermngmt - CacheRole", logger.LogData{
-						"err": err.Error(),
-					})
-					return
-				}
-			}
-
-			// Set role by permission with format: permissionCode,permissionCode,...
-			permissions := permissionFindByCondition(ctx, bson.M{
-				"roleId": role.ID,
-			})
-			permissionCodes := funk.Map(permissions, func(i model.DBPermission) string {
-				return i.Code
-			}).([]string)
-			permissionCodeString := strings.Join(permissionCodes, ",")
-			if err := cache.GetInstance().Set(role.ID.Hex(), []byte(permissionCodeString)); err != nil {
-				logger.Error("usermngmt - CacheRole", logger.LogData{
-					"err": err.Error(),
-				})
-				return
-			}
-		}(value)
-	}
-
-	wg.Done()
-	return
 }

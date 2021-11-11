@@ -11,12 +11,16 @@ var cache *bigcache.BigCache
 
 // Init ...
 func Init() {
-	// The time after which entries can be evicted is 5 years
-	c, err := bigcache.NewBigCache(bigcache.DefaultConfig(43800 * time.Hour))
+	// The time after which entries can be evicted is 30 days
+	const cacheTime = 24 * 30 * time.Hour // 30 days
+	c, err := bigcache.NewBigCache(bigcache.DefaultConfig(cacheTime))
 	if err != nil {
 		log.Fatalf("Cannot init Cache %v", err)
 	}
 	cache = c
+
+	// Cache roles
+	Roles()
 }
 
 // GetInstance ...

@@ -1,6 +1,7 @@
 package usermngmt
 
 import (
+	"github.com/Selly-Modules/usermngmt/cache"
 	"github.com/Selly-Modules/usermngmt/model"
 	"github.com/Selly-Modules/usermngmt/permission"
 	"github.com/Selly-Modules/usermngmt/role"
@@ -61,11 +62,11 @@ func (s Service) HasPermission(userID, permission string) bool {
 
 // CreateRole ...
 func (s Service) CreateRole(payload model.RoleCreateOptions) error {
-	err := role.Create(payload)
-	if err == nil {
-		role.CacheRoles()
+	if err := role.Create(payload); err != nil {
+		return err
 	}
-	return err
+	cache.Roles()
+	return nil
 }
 
 // UpdateRole ...
@@ -86,20 +87,20 @@ func (s Service) GetAllRoles(query model.RoleAllQuery) model.RoleAll {
 
 // CreatePermission ...
 func (s Service) CreatePermission(payload model.PermissionCreateOptions) error {
-	err := permission.Create(payload)
-	if err == nil {
-		role.CacheRoles()
+	if err := permission.Create(payload); err != nil {
+		return err
 	}
-	return err
+	cache.Roles()
+	return nil
 }
 
 // UpdatePermission ...
 func (s Service) UpdatePermission(permissionID string, payload model.PermissionUpdateOptions) error {
-	err := permission.Update(permissionID, payload)
-	if err == nil {
-		role.CacheRoles()
+	if err := permission.Update(permissionID, payload); err != nil {
+		return err
 	}
-	return err
+	cache.Roles()
+	return nil
 }
 
 // GetAllPermissions ...

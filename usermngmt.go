@@ -8,7 +8,6 @@ import (
 	"github.com/Selly-Modules/usermngmt/cache"
 	"github.com/Selly-Modules/usermngmt/database"
 	"github.com/Selly-Modules/usermngmt/internal"
-	"github.com/Selly-Modules/usermngmt/role"
 )
 
 // MongoDBConfig ...
@@ -65,9 +64,6 @@ func Init(config Config) (*Service, error) {
 	s = &Service{
 		config: config,
 	}
-
-	// Cache role
-	role.CacheRoles()
 
 	return s, nil
 }

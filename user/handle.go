@@ -3,7 +3,6 @@ package user
 import (
 	"context"
 	"errors"
-	"strings"
 	"sync"
 
 	"github.com/Selly-Modules/logger"
@@ -13,6 +12,7 @@ import (
 	"github.com/Selly-Modules/usermngmt/model"
 	"github.com/thoas/go-funk"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // Create ...
@@ -356,17 +356,21 @@ func HasPermission(userID, permission string) (result bool) {
 		return
 	}
 
-	// Get rolePermissions
-	// Role is saved with the value "admin" or "permissionCode,permissionCode,..."
-	entry, _ := cache.GetInstance().Get(user.RoleID.Hex())
-	rolePermissions := strings.Split(string(entry), ",")
+	return checkUserHasPermissionFromCache(user.RoleID, permission)
+}
 
-	// Check Permission
-	if _, isValid = funk.FindString(rolePermissions, func(s string) bool {
-		return s == permission || s == internal.RoleTypeAdmin
+func checkUserHasPermissionFromCache(roleID primitive.ObjectID, permission string) bool {
+	cachedRole := cache.GetCachedRole(roleID.Hex())
+
+	// Check permission
+	if cachedRole.IsAdmin {
+		return true
+	}
+	if _, isValid := funk.FindString(cachedRole.Permissions, func(s string) bool {
+		return s == permission
 	}); isValid {
-		return isValid
+		return true
 	}
 
-	return
+	return false
 }

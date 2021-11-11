@@ -7,7 +7,7 @@ import (
 	"github.com/allegro/bigcache/v3"
 )
 
-var cache *bigcache.BigCache
+var mc *bigcache.BigCache
 
 // Init ...
 func Init() {
@@ -17,7 +17,7 @@ func Init() {
 	if err != nil {
 		log.Fatalf("Cannot init Cache %v", err)
 	}
-	cache = c
+	mc = c
 
 	// Cache roles
 	Roles()
@@ -25,5 +25,5 @@ func Init() {
 
 // GetInstance ...
 func GetInstance() *bigcache.BigCache {
-	return cache
+	return mc
 }

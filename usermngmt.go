@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/Selly-Modules/mongodb"
+	"github.com/Selly-Modules/usermngmt/cache"
 	"github.com/Selly-Modules/usermngmt/database"
 	"github.com/Selly-Modules/usermngmt/internal"
 )
@@ -53,6 +54,9 @@ func Init(config Config) (*Service, error) {
 		fmt.Println("Cannot init module User MANAGEMENT", err)
 		return nil, err
 	}
+
+	// Init cache
+	cache.Init()
 
 	// Set database
 	database.Set(db, config.TablePrefix)

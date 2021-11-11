@@ -7,9 +7,12 @@ import (
 
 	"github.com/Selly-Modules/logger"
 	"github.com/Selly-Modules/mongodb"
+	"github.com/Selly-Modules/usermngmt/cache"
 	"github.com/Selly-Modules/usermngmt/internal"
 	"github.com/Selly-Modules/usermngmt/model"
+	"github.com/thoas/go-funk"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // Create ...
@@ -318,4 +321,56 @@ func LoginWithEmailAndPassword(email, password string) (result model.User, err e
 
 	result = getResponse(ctx, user)
 	return
+}
+
+// HasPermission ...
+func HasPermission(userID, permission string) (result bool) {
+	var (
+		ctx = context.Background()
+	)
+
+	// Validate userID, permission
+	if userID == "" || permission == "" {
+		logger.Error("usermngmt - HasPermission: email or password cannot be empty", logger.LogData{
+			"userID":     userID,
+			"permission": permission,
+		})
+		return
+	}
+	id, isValid := mongodb.NewIDFromString(userID)
+	if !isValid {
+		logger.Error("usermngmt - HasPermission: invalid user id", logger.LogData{
+			"userID":     userID,
+			"permission": permission,
+		})
+		return
+	}
+
+	// Find user
+	user, _ := findByID(ctx, id)
+	if user.ID.IsZero() {
+		logger.Error("usermngmt - HasPermission: user not found", logger.LogData{
+			"userID":     userID,
+			"permission": permission,
+		})
+		return
+	}
+
+	return checkUserHasPermissionFromCache(user.RoleID, permission)
+}
+
+func checkUserHasPermissionFromCache(roleID primitive.ObjectID, permission string) bool {
+	cachedRole := cache.GetCachedRole(roleID.Hex())
+
+	// Check permission
+	if cachedRole.IsAdmin {
+		return true
+	}
+	if _, isValid := funk.FindString(cachedRole.Permissions, func(s string) bool {
+		return s == permission
+	}); isValid {
+		return true
+	}
+
+	return false
 }

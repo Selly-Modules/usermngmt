@@ -7,4 +7,6 @@ const (
 	passwordHashingCost = 14
 
 	TablePrefixDefault = "usermngmt"
+
+	RoleTypeAdmin = "admin"
 )

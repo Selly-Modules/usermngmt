@@ -1,6 +1,7 @@
 package usermngmt
 
 import (
+	"github.com/Selly-Modules/usermngmt/cache"
 	"github.com/Selly-Modules/usermngmt/model"
 	"github.com/Selly-Modules/usermngmt/permission"
 	"github.com/Selly-Modules/usermngmt/role"
@@ -33,8 +34,8 @@ func (s Service) ChangeUserStatus(userID, newStatus string) error {
 	return user.ChangeUserStatus(userID, newStatus)
 }
 
-// GetAllUser ...
-func (s Service) GetAllUser(query model.UserAllQuery) model.UserAll {
+// GetAllUsers ...
+func (s Service) GetAllUsers(query model.UserAllQuery) model.UserAll {
 	return user.All(query)
 }
 
@@ -48,6 +49,11 @@ func (s Service) LoginWithEmailAndPassword(email, password string) (model.User, 
 	return user.LoginWithEmailAndPassword(email, password)
 }
 
+// HasPermission ...
+func (s Service) HasPermission(userID, permission string) bool {
+	return user.HasPermission(userID, permission)
+}
+
 //
 // Role
 //
@@ -56,7 +62,11 @@ func (s Service) LoginWithEmailAndPassword(email, password string) (model.User, 
 
 // CreateRole ...
 func (s Service) CreateRole(payload model.RoleCreateOptions) error {
-	return role.Create(payload)
+	if err := role.Create(payload); err != nil {
+		return err
+	}
+	cache.Roles()
+	return nil
 }
 
 // UpdateRole ...
@@ -77,12 +87,20 @@ func (s Service) GetAllRoles(query model.RoleAllQuery) model.RoleAll {
 
 // CreatePermission ...
 func (s Service) CreatePermission(payload model.PermissionCreateOptions) error {
-	return permission.Create(payload)
+	if err := permission.Create(payload); err != nil {
+		return err
+	}
+	cache.Roles()
+	return nil
 }
 
 // UpdatePermission ...
 func (s Service) UpdatePermission(permissionID string, payload model.PermissionUpdateOptions) error {
-	return permission.Update(permissionID, payload)
+	if err := permission.Update(permissionID, payload); err != nil {
+		return err
+	}
+	cache.Roles()
+	return nil
 }
 
 // GetAllPermissions ...

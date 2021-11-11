@@ -7,19 +7,8 @@ import (
 	"github.com/Selly-Modules/logger"
 	"github.com/Selly-Modules/usermngmt/database"
 	"github.com/Selly-Modules/usermngmt/model"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
-
-func findByID(ctx context.Context, id primitive.ObjectID) (model.DBRole, error) {
-	var (
-		doc model.DBRole
-		col = database.GetRoleCol()
-	)
-	err := col.FindOne(ctx, bson.M{"_id": id}).Decode(&doc)
-	return doc, err
-}
 
 func create(ctx context.Context, doc model.DBRole) error {
 	var (

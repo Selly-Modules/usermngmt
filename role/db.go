@@ -7,19 +7,8 @@ import (
 	"github.com/Selly-Modules/logger"
 	"github.com/Selly-Modules/usermngmt/database"
 	"github.com/Selly-Modules/usermngmt/model"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
-
-func findByID(ctx context.Context, id primitive.ObjectID) (model.DBRole, error) {
-	var (
-		doc model.DBRole
-		col = database.GetRoleCol()
-	)
-	err := col.FindOne(ctx, bson.M{"_id": id}).Decode(&doc)
-	return doc, err
-}
 
 func create(ctx context.Context, doc model.DBRole) error {
 	var (
@@ -52,33 +41,6 @@ func updateOneByCondition(ctx context.Context, cond interface{}, payload interfa
 	}
 
 	return err
-}
-
-func permissionFindByCondition(ctx context.Context, cond interface{}, opts ...*options.FindOptions) (docs []model.DBPermission) {
-	var (
-		col = database.GetPermissionCol()
-	)
-	docs = make([]model.DBPermission, 0)
-
-	cursor, err := col.Find(ctx, cond, opts...)
-	if err != nil {
-		logger.Error("usermngmt - Permission - Find", logger.LogData{
-			"cond": cond,
-			"opts": opts,
-			"err":  err.Error(),
-		})
-		return
-	}
-	defer cursor.Close(ctx)
-	if err = cursor.All(ctx, &docs); err != nil {
-		logger.Error("usermngmt - Permission - Decode", logger.LogData{
-			"cond": cond,
-			"opts": opts,
-			"err":  err.Error(),
-		})
-		return
-	}
-	return
 }
 
 func findByCondition(ctx context.Context, cond interface{}, opts ...*options.FindOptions) (docs []model.DBRole) {

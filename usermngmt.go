@@ -5,8 +5,10 @@ import (
 	"fmt"
 
 	"github.com/Selly-Modules/mongodb"
+	"github.com/Selly-Modules/usermngmt/cache"
 	"github.com/Selly-Modules/usermngmt/database"
 	"github.com/Selly-Modules/usermngmt/internal"
+	"github.com/Selly-Modules/usermngmt/role"
 )
 
 // MongoDBConfig ...
@@ -54,12 +56,18 @@ func Init(config Config) (*Service, error) {
 		return nil, err
 	}
 
+	// Init cache
+	cache.Init()
+
 	// Set database
 	database.Set(db, config.TablePrefix)
 
 	s = &Service{
 		config: config,
 	}
+
+	// Cache role
+	role.CacheRoles()
 
 	return s, nil
 }

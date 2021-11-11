@@ -3,12 +3,15 @@ package user
 import (
 	"context"
 	"errors"
+	"strings"
 	"sync"
 
 	"github.com/Selly-Modules/logger"
 	"github.com/Selly-Modules/mongodb"
+	"github.com/Selly-Modules/usermngmt/cache"
 	"github.com/Selly-Modules/usermngmt/internal"
 	"github.com/Selly-Modules/usermngmt/model"
+	"github.com/thoas/go-funk"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
@@ -328,7 +331,7 @@ func HasPermission(userID, permission string) (result bool) {
 
 	// Validate userID, permission
 	if userID == "" || permission == "" {
-		logger.Error("usermngmt - IsPermission: email or password cannot be empty", logger.LogData{
+		logger.Error("usermngmt - HasPermission: email or password cannot be empty", logger.LogData{
 			"userID":     userID,
 			"permission": permission,
 		})
@@ -336,7 +339,7 @@ func HasPermission(userID, permission string) (result bool) {
 	}
 	id, isValid := mongodb.NewIDFromString(userID)
 	if !isValid {
-		logger.Error("usermngmt - IsPermission: invalid user id", logger.LogData{
+		logger.Error("usermngmt - HasPermission: invalid user id", logger.LogData{
 			"userID":     userID,
 			"permission": permission,
 		})
@@ -346,26 +349,23 @@ func HasPermission(userID, permission string) (result bool) {
 	// Find user
 	user, _ := findByID(ctx, id)
 	if user.ID.IsZero() {
-		logger.Error("usermngmt - IsPermission: user not found", logger.LogData{
+		logger.Error("usermngmt - HasPermission: user not found", logger.LogData{
 			"userID":     userID,
 			"permission": permission,
 		})
 		return
 	}
 
-	// Check isAdmin
-	if role, _ := roleFindByID(ctx, user.RoleID); role.IsAdmin {
-		result = true
-		return
-	}
+	// Get rolePermissions
+	// Role is saved with the value "admin" or "permissionCode,permissionCode,..."
+	entry, _ := cache.GetInstance().Get(user.RoleID.Hex())
+	rolePermissions := strings.Split(string(entry), ",")
 
-	// Check permission
-	if total := permissionCountByCondition(ctx, bson.M{
-		"roleId": user.RoleID,
-		"code":   permission,
-	}); total > 0 {
-		result = true
-		return
+	// Check Permission
+	if _, isValid = funk.FindString(rolePermissions, func(s string) bool {
+		return s == permission || s == internal.RoleTypeAdmin
+	}); isValid {
+		return isValid
 	}
 
 	return

@@ -5,7 +5,10 @@ go 1.17
 require (
 	github.com/Selly-Modules/logger v0.0.0-20210809034923-140a51f39ec9
 	github.com/Selly-Modules/mongodb v0.0.0-20211013094205-a8ab24a96c4c
+	github.com/allegro/bigcache/v3 v3.0.1
+	github.com/thoas/go-funk v0.9.1
 	go.mongodb.org/mongo-driver v1.7.4
+	golang.org/x/crypto v0.0.0-20200302210943-78000ba7a073
 )
 
 require (
@@ -32,7 +35,6 @@ require (
 	go.uber.org/atomic v1.7.0 // indirect
 	go.uber.org/multierr v1.6.0 // indirect
 	go.uber.org/zap v1.18.1 // indirect
-	golang.org/x/crypto v0.0.0-20200302210943-78000ba7a073 // indirect
 	golang.org/x/lint v0.0.0-20201208152925-83fdc39ff7b5 // indirect
 	golang.org/x/mod v0.3.0 // indirect
 	golang.org/x/sync v0.0.0-20190911185100-cd5d95a43a6e // indirect

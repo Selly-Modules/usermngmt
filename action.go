@@ -61,7 +61,11 @@ func (s Service) HasPermission(userID, permission string) bool {
 
 // CreateRole ...
 func (s Service) CreateRole(payload model.RoleCreateOptions) error {
-	return role.Create(payload)
+	err := role.Create(payload)
+	if err == nil {
+		role.CacheRoles()
+	}
+	return err
 }
 
 // UpdateRole ...
@@ -82,12 +86,20 @@ func (s Service) GetAllRoles(query model.RoleAllQuery) model.RoleAll {
 
 // CreatePermission ...
 func (s Service) CreatePermission(payload model.PermissionCreateOptions) error {
-	return permission.Create(payload)
+	err := permission.Create(payload)
+	if err == nil {
+		role.CacheRoles()
+	}
+	return err
 }
 
 // UpdatePermission ...
 func (s Service) UpdatePermission(permissionID string, payload model.PermissionUpdateOptions) error {
-	return permission.Update(permissionID, payload)
+	err := permission.Update(permissionID, payload)
+	if err == nil {
+		role.CacheRoles()
+	}
+	return err
 }
 
 // GetAllPermissions ...

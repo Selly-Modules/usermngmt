@@ -6,15 +6,15 @@ import (
 
 // User ...
 type User struct {
-	ID        string    `json:"_id"`
-	Name      string    `json:"name"`
-	Phone     string    `json:"phone"`
-	Email     string    `json:"email"`
-	Status    string    `json:"status"`
-	Role      RoleShort `json:"role"`
-	Other     string    `json:"other"`
-	CreatedAt time.Time `json:"createdAt"`
-	UpdatedAt time.Time `json:"updatedAt"`
+	ID        string      `json:"_id"`
+	Name      string      `json:"name"`
+	Phone     string      `json:"phone"`
+	Email     string      `json:"email"`
+	Status    string      `json:"status"`
+	Role      RoleShort   `json:"role"`
+	Other     interface{} `json:"other"`
+	CreatedAt time.Time   `json:"createdAt"`
+	UpdatedAt time.Time   `json:"updatedAt"`
 }
 
 type (

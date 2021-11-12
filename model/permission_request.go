@@ -10,6 +10,7 @@ import (
 // PermissionCreateOptions ...
 type PermissionCreateOptions struct {
 	Name   string
+	Code   string
 	RoleID string
 	Desc   string
 }
@@ -17,6 +18,7 @@ type PermissionCreateOptions struct {
 // PermissionUpdateOptions ...
 type PermissionUpdateOptions struct {
 	Name   string
+	Code   string
 	RoleID string
 	Desc   string
 }
@@ -35,6 +37,14 @@ func (co PermissionCreateOptions) Validate() error {
 			"payload": co,
 		})
 		return errors.New("no name data")
+	}
+
+	// Code
+	if co.Code == "" {
+		logger.Error("usermngmt - Permission - Create: no code data", logger.LogData{
+			"payload": co,
+		})
+		return errors.New("no code data")
 	}
 
 	// RoleID
@@ -66,6 +76,14 @@ func (co PermissionUpdateOptions) Validate() error {
 			"payload": co,
 		})
 		return errors.New("no name data")
+	}
+
+	// Code
+	if co.Code == "" {
+		logger.Error("usermngmt - Permission - Update: no code data", logger.LogData{
+			"payload": co,
+		})
+		return errors.New("no code data")
 	}
 
 	// RoleID

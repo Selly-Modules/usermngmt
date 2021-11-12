@@ -14,7 +14,7 @@ type UserCreateOptions struct {
 	Password string
 	Status   string
 	RoleID   string
-	Other    string
+	Other    interface{}
 }
 
 // UserUpdateOptions ...
@@ -23,7 +23,7 @@ type UserUpdateOptions struct {
 	Phone  string
 	Email  string
 	RoleID string
-	Other  string
+	Other  interface{}
 }
 
 // ChangePasswordOptions ...

@@ -16,6 +16,7 @@ type Role struct {
 	ID        string    `json:"_id"`
 	Name      string    `json:"name"`
 	Code      string    `json:"code"`
+	Level     int       `json:"level"`
 	IsAdmin   bool      `json:"isAdmin"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`

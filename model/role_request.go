@@ -8,12 +8,14 @@ import (
 
 // RoleCreateOptions ...
 type RoleCreateOptions struct {
-	Name string
+	Name  string
+	Level int
 }
 
 // RoleUpdateOptions ...
 type RoleUpdateOptions struct {
-	Name string
+	Name  string
+	Level int
 }
 
 // RoleAllQuery ...

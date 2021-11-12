@@ -40,6 +40,7 @@ func newRole(payload model.RoleCreateOptions) model.DBRole {
 		ID:        mongodb.NewObjectID(),
 		Name:      payload.Name,
 		Code:      internal.GenerateCode(payload.Name),
+		Level:     payload.Level,
 		CreatedAt: timeNow,
 		UpdatedAt: timeNow,
 	}
@@ -72,6 +73,7 @@ func Update(roleID string, payload model.RoleUpdateOptions) error {
 		"$set": bson.M{
 			"name":      payload.Name,
 			"code":      internal.GenerateCode(payload.Name),
+			"level":     payload.Level,
 			"updatedAt": internal.Now(),
 		},
 	}
@@ -125,6 +127,7 @@ func getResponseList(roles []model.DBRole) []model.Role {
 			ID:        role.ID.Hex(),
 			Name:      role.Name,
 			Code:      role.Code,
+			Level:     role.Level,
 			CreatedAt: role.CreatedAt,
 			UpdatedAt: role.UpdatedAt,
 		})

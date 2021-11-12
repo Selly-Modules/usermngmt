@@ -40,7 +40,7 @@ func newPermission(payload model.PermissionCreateOptions) model.DBPermission {
 	return model.DBPermission{
 		ID:        mongodb.NewObjectID(),
 		Name:      payload.Name,
-		Code:      internal.GenerateCode(payload.Name),
+		Code:      payload.Code,
 		RoleID:    roleID,
 		Desc:      payload.Desc,
 		CreatedAt: timeNow,
@@ -75,7 +75,7 @@ func Update(permissionID string, payload model.PermissionUpdateOptions) error {
 	updateData := bson.M{
 		"$set": bson.M{
 			"name":      payload.Name,
-			"code":      internal.GenerateCode(payload.Name),
+			"code":      payload.Code,
 			"roleId":    roleID,
 			"desc":      payload.Desc,
 			"updatedAt": internal.Now(),

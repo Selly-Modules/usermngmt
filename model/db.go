@@ -12,6 +12,7 @@ type DBRole struct {
 	Name      string             `bson:"name"`
 	Code      string             `bson:"code"`
 	IsAdmin   bool               `bson:"isAdmin"`
+	Level     int                `bson:"level"`
 	CreatedAt time.Time          `bson:"createdAt"`
 	UpdatedAt time.Time          `bson:"updatedAt"`
 }
@@ -26,7 +27,7 @@ type DBUser struct {
 	HashedPassword string             `bson:"hashedPassword"`
 	Status         string             `bson:"status"`
 	RoleID         primitive.ObjectID `bson:"roleId"`
-	Other          string             `bson:"other"`
+	Other          interface{}        `bson:"other"`
 	CreatedAt      time.Time          `bson:"createdAt"`
 	UpdatedAt      time.Time          `bson:"updatedAt"`
 }

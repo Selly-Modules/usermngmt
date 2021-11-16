@@ -114,7 +114,7 @@ func countByCondition(ctx context.Context, cond interface{}) int64 {
 
 func isPermissionIDExisted(ctx context.Context, permissionID primitive.ObjectID) bool {
 	var (
-		col = database.GetRoleCol()
+		col = database.GetPermissionCol()
 	)
 	// Find
 	cond := bson.M{

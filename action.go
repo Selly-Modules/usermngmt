@@ -93,7 +93,7 @@ func (s Service) CreatePermission(payload model.PermissionCreateOptions) (id str
 	if err != nil {
 		return
 	}
-	
+
 	cache.Roles()
 	return
 }

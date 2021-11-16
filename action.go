@@ -107,6 +107,15 @@ func (s Service) UpdatePermission(permissionID string, payload model.PermissionU
 	return nil
 }
 
+// DeletePermission ...
+func (s Service) DeletePermission(permissionID string) error {
+	if err := permission.Delete(permissionID); err != nil {
+		return err
+	}
+	cache.Roles()
+	return nil
+}
+
 // GetAllPermissions ...
 func (s Service) GetAllPermissions(query model.PermissionAllQuery) model.PermissionAll {
 	return permission.All(query)

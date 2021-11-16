@@ -94,6 +94,29 @@ func Update(permissionID string, payload model.PermissionUpdateOptions) error {
 	return nil
 }
 
+// Delete ...
+func Delete(permissionID string) error {
+	var (
+		ctx = context.Background()
+	)
+
+	// Find permissionID exists or not
+	id, isValid := mongodb.NewIDFromString(permissionID)
+	if !isValid {
+		return errors.New("invalid permission id data")
+	}
+	if !isPermissionIDExisted(ctx, id) {
+		return errors.New("permission not found")
+	}
+
+	// Delete
+	if err := deleteOneByCondition(ctx, bson.M{"_id": id}); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // All ...
 func All(queryParams model.PermissionAllQuery) (r model.PermissionAll) {
 	var (

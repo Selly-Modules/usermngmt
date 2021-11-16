@@ -54,6 +54,22 @@ func updateOneByCondition(ctx context.Context, cond interface{}, payload interfa
 	return err
 }
 
+func deleteOneByCondition(ctx context.Context, cond interface{}) error {
+	var (
+		col = database.GetPermissionCol()
+	)
+	_, err := col.DeleteOne(ctx, cond)
+	if err != nil {
+		logger.Error("usermngmt - Permission - DeleteOne", logger.LogData{
+			"cond": cond,
+			"err":  err.Error(),
+		})
+		return fmt.Errorf("error when delete permission: %s", err.Error())
+	}
+
+	return err
+}
+
 func findByCondition(ctx context.Context, cond interface{}, opts ...*options.FindOptions) (docs []model.DBPermission) {
 	var (
 		col = database.GetPermissionCol()

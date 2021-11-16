@@ -22,6 +22,7 @@ type RoleUpdateOptions struct {
 type RoleAllQuery struct {
 	Page  int64
 	Limit int64
+	Sort  interface{}
 }
 
 // Validate ...

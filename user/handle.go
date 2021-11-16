@@ -87,7 +87,7 @@ func All(queryParams model.UserAllQuery) (r model.UserAll) {
 		Keyword: queryParams.Keyword,
 		RoleID:  queryParams.RoleID,
 		Status:  queryParams.Status,
-		Sort:    bson.M{"createdAt": -1},
+		Sort:    queryParams.Sort,
 	}
 
 	// Assign condition

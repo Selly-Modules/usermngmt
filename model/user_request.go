@@ -39,6 +39,7 @@ type UserAllQuery struct {
 	Keyword string
 	RoleID  string
 	Status  string
+	Sort    interface{}
 }
 
 // Validate ...

@@ -27,6 +27,7 @@ type PermissionUpdateOptions struct {
 type PermissionAllQuery struct {
 	Page  int64
 	Limit int64
+	Sort  interface{}
 }
 
 // Validate ...

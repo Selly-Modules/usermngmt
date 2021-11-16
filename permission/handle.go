@@ -104,7 +104,7 @@ func All(queryParams model.PermissionAllQuery) (r model.PermissionAll) {
 	query := model.CommonQuery{
 		Page:  queryParams.Page,
 		Limit: queryParams.Limit,
-		Sort:  bson.M{"createdAt": -1},
+		Sort:  queryParams.Sort,
 	}
 
 	// Assign condition

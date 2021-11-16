@@ -95,3 +95,22 @@ func countByCondition(ctx context.Context, cond interface{}) int64 {
 	}
 	return total
 }
+
+func isPermissionIDExisted(ctx context.Context, permissionID primitive.ObjectID) bool {
+	var (
+		col = database.GetRoleCol()
+	)
+	// Find
+	cond := bson.M{
+		"_id": permissionID,
+	}
+	total, err := col.CountDocuments(ctx, cond)
+	if err != nil {
+		logger.Error("usermngmt - Permission - CountDocuments", logger.LogData{
+			"condition": cond,
+			"err":       err.Error(),
+		})
+		return false
+	}
+	return total != 0
+}

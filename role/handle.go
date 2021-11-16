@@ -12,25 +12,26 @@ import (
 )
 
 // Create ...
-func Create(payload model.RoleCreateOptions) error {
+func Create(payload model.RoleCreateOptions) (result string, err error) {
 	var (
 		ctx = context.Background()
 	)
 
 	// Validate payload
-	if err := payload.Validate(); err != nil {
-		return err
+	if err = payload.Validate(); err != nil {
+		return
 	}
 
 	// New role data from payload
 	doc := newRole(payload)
 
 	// Create role
-	if err := create(ctx, doc); err != nil {
-		return err
+	if err = create(ctx, doc); err != nil {
+		return
 	}
 
-	return nil
+	result = doc.ID.Hex()
+	return
 }
 
 // newRole ...
@@ -61,6 +62,11 @@ func Update(roleID string, payload model.RoleUpdateOptions) error {
 	id, isValid := mongodb.NewIDFromString(roleID)
 	if !isValid {
 		return errors.New("invalid role id data")
+	}
+
+	// Find roleID exists or not
+	if !isRoleIDExisted(ctx, id) {
+		return errors.New("role not found")
 	}
 
 	// Setup condition
@@ -106,7 +112,11 @@ func All(queryParams model.RoleAllQuery) (r model.RoleAll) {
 	go func() {
 		defer wg.Done()
 		docs := findByCondition(ctx, cond, query.GetFindOptionsUsingPage())
-		r.List = getResponseList(docs)
+		res := make([]model.Role, 0)
+		for _, doc := range docs {
+			res = append(res, getResponse(doc))
+		}
+		r.List = res
 	}()
 
 	wg.Add(1)
@@ -120,18 +130,13 @@ func All(queryParams model.RoleAllQuery) (r model.RoleAll) {
 	return
 }
 
-func getResponseList(roles []model.DBRole) []model.Role {
-	res := make([]model.Role, 0)
-	for _, role := range roles {
-		res = append(res, model.Role{
-			ID:        role.ID.Hex(),
-			Name:      role.Name,
-			Code:      role.Code,
-			Level:     role.Level,
-			CreatedAt: role.CreatedAt,
-			UpdatedAt: role.UpdatedAt,
-		})
+func getResponse(role model.DBRole) model.Role {
+	return model.Role{
+		ID:        role.ID.Hex(),
+		Name:      role.Name,
+		Code:      role.Code,
+		Level:     role.Level,
+		CreatedAt: role.CreatedAt,
+		UpdatedAt: role.UpdatedAt,
 	}
-
-	return res
 }

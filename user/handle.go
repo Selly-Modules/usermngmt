@@ -16,46 +16,47 @@ import (
 )
 
 // Create ...
-func Create(payload model.UserCreateOptions) error {
+func Create(payload model.UserCreateOptions) (result string, err error) {
 	var (
 		ctx = context.Background()
 	)
 
 	// Validate payload
-	if err := payload.Validate(); err != nil {
-		return err
+	if err = payload.Validate(); err != nil {
+		return
 	}
 
 	//  Find roleID exists or not
 	roleID, isValid := mongodb.NewIDFromString(payload.RoleID)
 	if !isValid {
-		return errors.New("invalid role id data")
+		err = errors.New("invalid role id data")
+		return
 	}
 	if !isRoleIDExisted(ctx, roleID) {
-		return errors.New("role id does not exist")
+		err = errors.New("role id does not exist")
+		return
 	}
 
 	// Find phone number,email exists or not
 	if isPhoneNumberOrEmailExisted(ctx, payload.Phone, payload.Email) {
-		return errors.New("phone number or email already existed")
+		err = errors.New("phone number or email already existed")
+		return
 	}
 
 	// New user data from payload
-	doc, err := newUser(payload)
-	if err != nil {
-		return err
-	}
+	doc := newUser(payload)
 
 	// Create user
 	if err = create(ctx, doc); err != nil {
-		return err
+		return
 	}
 
-	return nil
+	result = doc.ID.Hex()
+	return
 }
 
 // newUser ...
-func newUser(payload model.UserCreateOptions) (result model.DBUser, err error) {
+func newUser(payload model.UserCreateOptions) model.DBUser {
 	timeNow := internal.Now()
 	roleID, _ := mongodb.NewIDFromString(payload.RoleID)
 	return model.DBUser{
@@ -70,7 +71,7 @@ func newUser(payload model.UserCreateOptions) (result model.DBUser, err error) {
 		Other:          payload.Other,
 		CreatedAt:      timeNow,
 		UpdatedAt:      timeNow,
-	}, nil
+	}
 }
 
 // All ...
@@ -156,13 +157,29 @@ func UpdateByUserID(userID string, payload model.UserUpdateOptions) error {
 		return errors.New("role id does not exist")
 	}
 
+	// Find user exists or not
+	id, isValid := mongodb.NewIDFromString(userID)
+	if !isValid {
+		return errors.New("invalid role id data")
+	}
+	user, _ := findByID(ctx, id)
+	if user.ID.IsZero() {
+		return errors.New("user not found")
+	}
+
 	// Find phone number,email exists or not
-	if isPhoneNumberOrEmailExisted(ctx, payload.Phone, payload.Email) {
-		return errors.New("phone number or email already existed")
+	if user.Phone != payload.Phone {
+		if isPhoneNumberExisted(ctx, payload.Phone) {
+			return errors.New("phone number already existed")
+		}
+	}
+	if user.Email != payload.Email {
+		if isEmailExisted(ctx, payload.Email) {
+			return errors.New("email already existed")
+		}
 	}
 
 	// Setup condition
-	id, _ := mongodb.NewIDFromString(userID)
 	cond := bson.M{
 		"_id": id,
 	}

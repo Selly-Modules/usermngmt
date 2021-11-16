@@ -55,11 +55,11 @@ func Init(config Config) (*Service, error) {
 		return nil, err
 	}
 
-	// Init cache
-	cache.Init()
-
 	// Set database
 	database.Set(db, config.TablePrefix)
+
+	// Init cache
+	cache.Init()
 
 	s = &Service{
 		config: config,

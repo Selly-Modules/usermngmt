@@ -15,7 +15,7 @@ import (
 // user methods
 
 // CreateUser ...
-func (s Service) CreateUser(payload model.UserCreateOptions) error {
+func (s Service) CreateUser(payload model.UserCreateOptions) (id string, err error) {
 	return user.Create(payload)
 }
 
@@ -61,12 +61,14 @@ func (s Service) HasPermission(userID, permission string) bool {
 // role methods
 
 // CreateRole ...
-func (s Service) CreateRole(payload model.RoleCreateOptions) error {
-	if err := role.Create(payload); err != nil {
-		return err
+func (s Service) CreateRole(payload model.RoleCreateOptions) (id string, err error) {
+	id, err = role.Create(payload)
+	if err != nil {
+		return
 	}
+
 	cache.Roles()
-	return nil
+	return
 }
 
 // UpdateRole ...
@@ -86,12 +88,14 @@ func (s Service) GetAllRoles(query model.RoleAllQuery) model.RoleAll {
 // permission methods
 
 // CreatePermission ...
-func (s Service) CreatePermission(payload model.PermissionCreateOptions) error {
-	if err := permission.Create(payload); err != nil {
-		return err
+func (s Service) CreatePermission(payload model.PermissionCreateOptions) (id string, err error) {
+	id, err = permission.Create(payload)
+	if err != nil {
+		return
 	}
+	
 	cache.Roles()
-	return nil
+	return
 }
 
 // UpdatePermission ...

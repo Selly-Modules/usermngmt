@@ -12,25 +12,26 @@ import (
 )
 
 // Create ...
-func Create(payload model.PermissionCreateOptions) error {
+func Create(payload model.PermissionCreateOptions) (result string, err error) {
 	var (
 		ctx = context.Background()
 	)
 
 	// Validate payload
-	if err := payload.Validate(); err != nil {
-		return err
+	if err = payload.Validate(); err != nil {
+		return
 	}
 
 	// New permission data from payload
 	doc := newPermission(payload)
 
 	// Create permission
-	if err := create(ctx, doc); err != nil {
-		return err
+	if err = create(ctx, doc); err != nil {
+		return
 	}
 
-	return nil
+	result = doc.ID.Hex()
+	return
 }
 
 // newPermission ...
@@ -59,10 +60,13 @@ func Update(permissionID string, payload model.PermissionUpdateOptions) error {
 		return err
 	}
 
-	// Validate permissionID
+	// Find permissionID exists or not
 	id, isValid := mongodb.NewIDFromString(permissionID)
 	if !isValid {
 		return errors.New("invalid permission id data")
+	}
+	if !isPermissionIDExisted(ctx, id) {
+		return errors.New("permission not found")
 	}
 
 	// Setup condition

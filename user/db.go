@@ -38,6 +38,44 @@ func isPhoneNumberOrEmailExisted(ctx context.Context, phone, email string) bool 
 	return total != 0
 }
 
+func isPhoneNumberExisted(ctx context.Context, phone string) bool {
+	var (
+		col = database.GetUserCol()
+	)
+	// Find
+	cond := bson.M{
+		"phone": phone,
+	}
+	total, err := col.CountDocuments(ctx, cond)
+	if err != nil {
+		logger.Error("usermngmt - User - CountDocuments", logger.LogData{
+			"condition": cond,
+			"err":       err.Error(),
+		})
+		return true
+	}
+	return total != 0
+}
+
+func isEmailExisted(ctx context.Context, email string) bool {
+	var (
+		col = database.GetUserCol()
+	)
+	// Find
+	cond := bson.M{
+		"email": email,
+	}
+	total, err := col.CountDocuments(ctx, cond)
+	if err != nil {
+		logger.Error("usermngmt - User - CountDocuments", logger.LogData{
+			"condition": cond,
+			"err":       err.Error(),
+		})
+		return true
+	}
+	return total != 0
+}
+
 func isRoleIDExisted(ctx context.Context, roleID primitive.ObjectID) bool {
 	var (
 		col = database.GetRoleCol()

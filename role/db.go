@@ -7,6 +7,8 @@ import (
 	"github.com/Selly-Modules/logger"
 	"github.com/Selly-Modules/usermngmt/database"
 	"github.com/Selly-Modules/usermngmt/model"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
@@ -83,4 +85,23 @@ func countByCondition(ctx context.Context, cond interface{}) int64 {
 		})
 	}
 	return total
+}
+
+func isRoleIDExisted(ctx context.Context, roleID primitive.ObjectID) bool {
+	var (
+		col = database.GetRoleCol()
+	)
+	// Find
+	cond := bson.M{
+		"_id": roleID,
+	}
+	total, err := col.CountDocuments(ctx, cond)
+	if err != nil {
+		logger.Error("usermngmt - Role - CountDocuments", logger.LogData{
+			"condition": cond,
+			"err":       err.Error(),
+		})
+		return false
+	}
+	return total != 0
 }

@@ -20,5 +20,6 @@ type (
 	PermissionAll struct {
 		List  []Permission `json:"list"`
 		Total int64        `json:"total"`
+		Limit int64        `json:"limit"`
 	}
 )

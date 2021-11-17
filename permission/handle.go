@@ -125,13 +125,15 @@ func All(queryParams model.PermissionAllQuery) (r model.PermissionAll) {
 		cond = bson.M{}
 	)
 	query := model.CommonQuery{
-		Page:  queryParams.Page,
-		Limit: queryParams.Limit,
-		Sort:  queryParams.Sort,
+		Page:   queryParams.Page,
+		Limit:  queryParams.Limit,
+		Sort:   queryParams.Sort,
+		RoleID: queryParams.RoleID,
 	}
 
 	// Assign condition
 	query.SetDefaultLimit()
+	query.AssignRoleID(cond)
 
 	wg.Add(1)
 	go func() {

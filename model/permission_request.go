@@ -25,9 +25,10 @@ type PermissionUpdateOptions struct {
 
 // PermissionAllQuery ...
 type PermissionAllQuery struct {
-	Page  int64
-	Limit int64
-	Sort  interface{}
+	Page   int64
+	Limit  int64
+	Sort   interface{}
+	RoleID string
 }
 
 // Validate ...

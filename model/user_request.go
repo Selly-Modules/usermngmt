@@ -8,13 +8,14 @@ import (
 
 // UserCreateOptions ...
 type UserCreateOptions struct {
-	Name     string
-	Phone    string
-	Email    string
-	Password string
-	Status   string
-	RoleID   string
-	Other    interface{}
+	Name                    string
+	Phone                   string
+	Email                   string
+	Password                string
+	Status                  string
+	RoleID                  string
+	RequireToChangePassword bool
+	Other                   interface{}
 }
 
 // UserUpdateOptions ...

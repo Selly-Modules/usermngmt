@@ -60,17 +60,18 @@ func newUser(payload model.UserCreateOptions) model.DBUser {
 	timeNow := internal.Now()
 	roleID, _ := mongodb.NewIDFromString(payload.RoleID)
 	return model.DBUser{
-		ID:             mongodb.NewObjectID(),
-		Name:           payload.Name,
-		SearchString:   internal.GetSearchString(payload.Name, payload.Phone, payload.Email),
-		Phone:          payload.Phone,
-		Email:          payload.Email,
-		HashedPassword: internal.HashPassword(payload.Password),
-		Status:         payload.Status,
-		RoleID:         roleID,
-		Other:          payload.Other,
-		CreatedAt:      timeNow,
-		UpdatedAt:      timeNow,
+		ID:                      mongodb.NewObjectID(),
+		Name:                    payload.Name,
+		SearchString:            internal.GetSearchString(payload.Name, payload.Phone, payload.Email),
+		Phone:                   payload.Phone,
+		Email:                   payload.Email,
+		HashedPassword:          internal.HashPassword(payload.Password),
+		RequireToChangePassword: payload.RequireToChangePassword,
+		Status:                  payload.Status,
+		RoleID:                  roleID,
+		Other:                   payload.Other,
+		CreatedAt:               timeNow,
+		UpdatedAt:               timeNow,
 	}
 }
 
@@ -390,4 +391,82 @@ func checkUserHasPermissionFromCache(roleID primitive.ObjectID, permission strin
 	}
 
 	return false
+}
+
+// UpdateAvatar ...
+func UpdateAvatar(userID string, avatar string) error {
+	var (
+		ctx = context.Background()
+	)
+
+	if avatar == "" {
+		return errors.New("no avatar data")
+	}
+
+	// Find user exists or not
+	id, isValid := mongodb.NewIDFromString(userID)
+	if !isValid {
+		return errors.New("invalid role id data")
+	}
+	user, _ := findByID(ctx, id)
+	if user.ID.IsZero() {
+		return errors.New("user not found")
+	}
+
+	// Setup condition
+	cond := bson.M{
+		"_id": id,
+	}
+
+	// Setup update data
+	updateData := bson.M{
+		"$set": bson.M{
+			"avatar":    avatar,
+			"updatedAt": internal.Now(),
+		},
+	}
+
+	// Update
+	if err := updateOneByCondition(ctx, cond, updateData); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// Delete ...
+func Delete(userID string) error {
+	var (
+		ctx = context.Background()
+	)
+
+	// Find user exists or not
+	id, isValid := mongodb.NewIDFromString(userID)
+	if !isValid {
+		return errors.New("invalid role id data")
+	}
+	user, _ := findByID(ctx, id)
+	if user.ID.IsZero() {
+		return errors.New("user not found")
+	}
+
+	// Setup condition
+	cond := bson.M{
+		"_id": id,
+	}
+
+	// Setup update data
+	updateData := bson.M{
+		"$set": bson.M{
+			"deleted":   true,
+			"updatedAt": internal.Now(),
+		},
+	}
+
+	// Update
+	if err := updateOneByCondition(ctx, cond, updateData); err != nil {
+		return err
+	}
+
+	return nil
 }

@@ -54,6 +54,16 @@ func (s Service) HasPermission(userID, permission string) bool {
 	return user.HasPermission(userID, permission)
 }
 
+// UpdateUserAvatar ...
+func (s Service) UpdateUserAvatar(userID, avatar string) error {
+	return user.UpdateAvatar(userID, avatar)
+}
+
+// DeleteUser ...
+func (s Service) DeleteUser(userID string) error {
+	return user.Delete(userID)
+}
+
 //
 // Role
 //

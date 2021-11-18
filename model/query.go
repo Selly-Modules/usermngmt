@@ -14,6 +14,7 @@ type CommonQuery struct {
 	RoleID  string
 	Status  string
 	Sort    interface{}
+	Other   map[string]interface{}
 }
 
 // AssignKeyword ...
@@ -55,5 +56,15 @@ func (q *CommonQuery) GetFindOptionsUsingPage() *options.FindOptions {
 func (q *CommonQuery) SetDefaultLimit() {
 	if q.Limit <= 0 || q.Limit > 20 {
 		q.Limit = 20
+	}
+}
+
+// AssignOther ...
+func (q *CommonQuery) AssignOther(cond bson.M) {
+	// Query fields in other object 
+	if len(q.Other) > 0 {
+		for key, value := range q.Other {
+			cond["other."+key] = value
+		}
 	}
 }

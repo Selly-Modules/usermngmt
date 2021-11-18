@@ -89,6 +89,7 @@ func All(queryParams model.UserAllQuery) (r model.UserAll) {
 		RoleID:  queryParams.RoleID,
 		Status:  queryParams.Status,
 		Sort:    queryParams.Sort,
+		Other:   queryParams.Other,
 	}
 
 	// Assign condition
@@ -96,6 +97,7 @@ func All(queryParams model.UserAllQuery) (r model.UserAll) {
 	query.AssignKeyword(cond)
 	query.AssignRoleID(cond)
 	query.AssignStatus(cond)
+	query.AssignOther(cond)
 
 	wg.Add(1)
 	go func() {

@@ -41,6 +41,7 @@ type UserAllQuery struct {
 	RoleID  string
 	Status  string
 	Sort    interface{}
+	Other   map[string]interface{}  // query fields in other object
 }
 
 // Validate ...

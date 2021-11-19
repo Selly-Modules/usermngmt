@@ -8,14 +8,16 @@ import (
 
 // RoleCreateOptions ...
 type RoleCreateOptions struct {
-	Name  string
-	Level int
+	Name    string
+	Level   int
+	IsAdmin bool
 }
 
 // RoleUpdateOptions ...
 type RoleUpdateOptions struct {
-	Name  string
-	Level int
+	Name    string
+	Level   int
+	IsAdmin bool
 }
 
 // RoleAllQuery ...

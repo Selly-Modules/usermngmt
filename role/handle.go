@@ -42,6 +42,7 @@ func newRole(payload model.RoleCreateOptions) model.DBRole {
 		Name:      payload.Name,
 		Code:      internal.GenerateCode(payload.Name),
 		Level:     payload.Level,
+		IsAdmin:   payload.IsAdmin,
 		CreatedAt: timeNow,
 		UpdatedAt: timeNow,
 	}
@@ -80,6 +81,7 @@ func Update(roleID string, payload model.RoleUpdateOptions) error {
 			"name":      payload.Name,
 			"code":      internal.GenerateCode(payload.Name),
 			"level":     payload.Level,
+			"isAdmin":   payload.IsAdmin,
 			"updatedAt": internal.Now(),
 		},
 	}

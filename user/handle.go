@@ -75,6 +75,28 @@ func newUser(payload model.UserCreateOptions) model.DBUser {
 	}
 }
 
+// FindUser ...
+func FindUser(userID string) (r model.User, err error) {
+	var (
+		ctx = context.Background()
+	)
+
+	// Find user exists or not
+	id, isValid := mongodb.NewIDFromString(userID)
+	if !isValid {
+		err = errors.New("invalid user id data")
+		return
+	}
+	user, _ := findByID(ctx, id)
+	if user.ID.IsZero() {
+		err = errors.New("user not found")
+		return
+	}
+
+	r = getResponse(ctx, user)
+	return
+}
+
 // All ...
 func All(queryParams model.UserAllQuery) (r model.UserAll) {
 	var (
@@ -132,6 +154,7 @@ func getResponse(ctx context.Context, user model.DBUser) model.User {
 		Role: model.RoleShort{
 			ID:      roleRaw.ID.Hex(),
 			Name:    roleRaw.Name,
+			Level:   roleRaw.Level,
 			IsAdmin: roleRaw.IsAdmin,
 		},
 		Other:     user.Other,
@@ -163,7 +186,7 @@ func UpdateByUserID(userID string, payload model.UserUpdateOptions) error {
 	// Find user exists or not
 	id, isValid := mongodb.NewIDFromString(userID)
 	if !isValid {
-		return errors.New("invalid role id data")
+		return errors.New("invalid user id data")
 	}
 	user, _ := findByID(ctx, id)
 	if user.ID.IsZero() {

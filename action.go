@@ -19,6 +19,11 @@ func (s Service) CreateUser(payload model.UserCreateOptions) (id string, err err
 	return user.Create(payload)
 }
 
+// FindUser ...
+func (s Service) FindUser(userID string) (model.User, error) {
+	return user.FindUser(userID)
+}
+
 // UpdateUser ...
 func (s Service) UpdateUser(userID string, payload model.UserUpdateOptions) error {
 	return user.UpdateByUserID(userID, payload)

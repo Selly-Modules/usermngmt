@@ -105,3 +105,12 @@ func isRoleIDExisted(ctx context.Context, roleID primitive.ObjectID) bool {
 	}
 	return total != 0
 }
+
+func findByID(ctx context.Context, id primitive.ObjectID) (model.DBRole, error) {
+	var (
+		doc model.DBRole
+		col = database.GetRoleCol()
+	)
+	err := col.FindOne(ctx, bson.M{"_id": id}).Decode(&doc)
+	return doc, err
+}

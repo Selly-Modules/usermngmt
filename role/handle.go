@@ -142,3 +142,25 @@ func getResponse(role model.DBRole) model.Role {
 		UpdatedAt: role.UpdatedAt,
 	}
 }
+
+// FindRole ...
+func FindRole(roleID string) (r model.Role, err error) {
+	var (
+		ctx = context.Background()
+	)
+
+	// Find role exists or not
+	id, isValid := mongodb.NewIDFromString(roleID)
+	if !isValid {
+		err = errors.New("invalid role id data")
+		return
+	}
+	role, _ := findByID(ctx, id)
+	if role.ID.IsZero() {
+		err = errors.New("role not found")
+		return
+	}
+
+	r = getResponse(role)
+	return
+}

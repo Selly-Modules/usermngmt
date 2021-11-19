@@ -101,6 +101,11 @@ func (s Service) GetAllRoles(query model.RoleAllQuery) model.RoleAll {
 	return role.All(query)
 }
 
+// FindRole ...
+func (s Service) FindRole(roleID string) (model.Role, error) {
+	return role.FindRole(roleID)
+}
+
 //
 // Permission
 //

@@ -143,6 +143,24 @@ func All(queryParams model.UserAllQuery) (r model.UserAll) {
 	return
 }
 
+// Count  ...
+func Count(queryParams model.UserCountQuery) int64 {
+	var (
+		ctx  = context.Background()
+		cond = bson.M{}
+	)
+	query := model.CommonQuery{
+		RoleID: queryParams.RoleID,
+		Other:  queryParams.Other,
+	}
+
+	// Assign condition
+	query.AssignRoleID(cond)
+	query.AssignOther(cond)
+
+	return countByCondition(ctx, cond)
+}
+
 func getResponse(ctx context.Context, user model.DBUser) model.User {
 	roleRaw, _ := roleFindByID(ctx, user.RoleID)
 	return model.User{

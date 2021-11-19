@@ -44,6 +44,11 @@ func (s Service) GetAllUsers(query model.UserAllQuery) model.UserAll {
 	return user.All(query)
 }
 
+// CountAllUsers ...
+func (s Service) CountAllUsers(query model.UserCountQuery) int64 {
+	return user.Count(query)
+}
+
 // ChangeAllUsersStatus ...
 func (s Service) ChangeAllUsersStatus(roleID, status string) error {
 	return user.ChangeAllUsersStatus(roleID, status)

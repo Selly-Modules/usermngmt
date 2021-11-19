@@ -41,7 +41,13 @@ type UserAllQuery struct {
 	RoleID  string
 	Status  string
 	Sort    interface{}
-	Other   map[string]interface{}  // query fields in other object
+	Other   map[string]interface{} // query fields in other object
+}
+
+// UserCountQuery ...
+type UserCountQuery struct {
+	RoleID string
+	Other  map[string]interface{} // query fields in other object
 }
 
 // Validate ...

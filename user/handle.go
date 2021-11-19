@@ -228,21 +228,25 @@ func UpdateByUserID(userID string, payload model.UserUpdateOptions) error {
 		"_id": id,
 	}
 
-	// Setup update data
-	updateData := bson.M{
-		"$set": bson.M{
-			"name":         payload.Name,
-			"searchString": internal.GetSearchString(payload.Name, payload.Phone, payload.Email),
-			"phone":        payload.Phone,
-			"email":        payload.Email,
-			"roleId":       roleID,
-			"other":        payload.Other,
-			"updatedAt":    internal.Now(),
-		},
+	// Setup Set operator
+	setOperator := bson.M{
+		"name":         payload.Name,
+		"searchString": internal.GetSearchString(payload.Name, payload.Phone, payload.Email),
+		"phone":        payload.Phone,
+		"email":        payload.Email,
+		"roleId":       roleID,
+		"updatedAt":    internal.Now(),
+	}
+	if len(payload.Other) > 0 {
+		for key, value := range payload.Other {
+			setOperator["other."+key] = value
+		}
 	}
 
 	// Update
-	if err := updateOneByCondition(ctx, cond, updateData); err != nil {
+	if err := updateOneByCondition(ctx, cond, bson.M{
+		"$set": setOperator,
+	}); err != nil {
 		return err
 	}
 

@@ -30,7 +30,7 @@ type DBUser struct {
 	RequireToChangePassword bool               `bson:"requireToChangePassword"`
 	Avatar                  string             `bson:"avatar"`
 	Deleted                 bool               `bson:"deleted"`
-	Other                   interface{}        `bson:"other"`
+	Other                   interface{}        `bson:"other"` // object
 	CreatedAt               time.Time          `bson:"createdAt"`
 	UpdatedAt               time.Time          `bson:"updatedAt"`
 }

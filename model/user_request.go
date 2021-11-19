@@ -24,7 +24,7 @@ type UserUpdateOptions struct {
 	Phone  string
 	Email  string
 	RoleID string
-	Other  interface{}
+	Other  map[string]interface{}
 }
 
 // ChangePasswordOptions ...

@@ -13,8 +13,19 @@ type CommonQuery struct {
 	Keyword string
 	RoleID  string
 	Status  string
+	Deleted string
 	Sort    interface{}
 	Other   map[string]interface{}
+}
+
+// AssignDeleted ...
+func (q *CommonQuery) AssignDeleted(cond bson.M) {
+	if q.Deleted == "true" {
+		cond["deleted"] = true
+	}
+	if q.Deleted == "false" {
+		cond["deleted"] = false
+	}
 }
 
 // AssignKeyword ...

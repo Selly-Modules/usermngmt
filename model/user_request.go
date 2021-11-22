@@ -16,6 +16,7 @@ type UserCreateOptions struct {
 	RoleID                  string
 	RequireToChangePassword bool
 	Other                   interface{}
+	Avatar                  interface{} // if not, pass default file object
 }
 
 // UserUpdateOptions ...

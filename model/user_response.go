@@ -13,6 +13,7 @@ type User struct {
 	Status    string      `json:"status"`
 	Role      RoleShort   `json:"role"`
 	Other     interface{} `json:"other"`
+	Avatar    interface{} `json:"avatar"`
 	CreatedAt time.Time   `json:"createdAt"`
 	UpdatedAt time.Time   `json:"updatedAt"`
 }

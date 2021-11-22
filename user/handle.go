@@ -70,6 +70,7 @@ func newUser(payload model.UserCreateOptions) model.DBUser {
 		Status:                  payload.Status,
 		RoleID:                  roleID,
 		Other:                   payload.Other,
+		Avatar:                  payload.Avatar,
 		CreatedAt:               timeNow,
 		UpdatedAt:               timeNow,
 	}
@@ -177,6 +178,7 @@ func getResponse(ctx context.Context, user model.DBUser) model.User {
 			Level:   roleRaw.Level,
 			IsAdmin: roleRaw.IsAdmin,
 		},
+		Avatar:    user.Avatar,
 		Other:     user.Other,
 		CreatedAt: user.CreatedAt,
 		UpdatedAt: user.UpdatedAt,
@@ -443,12 +445,12 @@ func checkUserHasPermissionFromCache(roleID primitive.ObjectID, permission strin
 }
 
 // UpdateAvatar ...
-func UpdateAvatar(userID string, avatar string) error {
+func UpdateAvatar(userID string, avatar interface{}) error {
 	var (
 		ctx = context.Background()
 	)
 
-	if avatar == "" {
+	if avatar == nil {
 		return errors.New("no avatar data")
 	}
 

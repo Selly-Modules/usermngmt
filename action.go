@@ -65,7 +65,7 @@ func (s Service) HasPermission(userID, permission string) bool {
 }
 
 // UpdateUserAvatar ...
-func (s Service) UpdateUserAvatar(userID, avatar string) error {
+func (s Service) UpdateUserAvatar(userID string, avatar interface{}) error {
 	return user.UpdateAvatar(userID, avatar)
 }
 

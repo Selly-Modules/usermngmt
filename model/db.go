@@ -28,7 +28,7 @@ type DBUser struct {
 	Status                  string             `bson:"status"`
 	RoleID                  primitive.ObjectID `bson:"roleId"`
 	RequireToChangePassword bool               `bson:"requireToChangePassword"`
-	Avatar                  string             `bson:"avatar"`
+	Avatar                  interface{}        `bson:"avatar"`
 	Deleted                 bool               `bson:"deleted"`
 	Other                   interface{}        `bson:"other"` // object
 	CreatedAt               time.Time          `bson:"createdAt"`

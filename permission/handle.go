@@ -150,6 +150,7 @@ func All(queryParams model.PermissionAllQuery) (r model.PermissionAll) {
 
 	wg.Wait()
 
+	r.Limit = query.Limit
 	return
 }
 

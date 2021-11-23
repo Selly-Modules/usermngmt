@@ -129,6 +129,7 @@ func All(queryParams model.RoleAllQuery) (r model.RoleAll) {
 
 	wg.Wait()
 
+	r.Limit = query.Limit
 	return
 }
 

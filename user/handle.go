@@ -143,6 +143,7 @@ func All(queryParams model.UserAllQuery) (r model.UserAll) {
 
 	wg.Wait()
 
+	r.Limit = query.Limit
 	return
 }
 

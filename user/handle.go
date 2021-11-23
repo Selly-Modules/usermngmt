@@ -294,8 +294,9 @@ func ChangeUserPassword(userID string, opt model.ChangePasswordOptions) error {
 	// Update password
 	if err = updateOneByCondition(ctx, bson.M{"_id": user.ID}, bson.M{
 		"$set": bson.M{
-			"hashedPassword": internal.HashPassword(opt.NewPassword),
-			"updatedAt":      internal.Now(),
+			"hashedPassword":          internal.HashPassword(opt.NewPassword),
+			"requireToChangePassword": false,
+			"updatedAt":               internal.Now(),
 		},
 	}); err != nil {
 		return err

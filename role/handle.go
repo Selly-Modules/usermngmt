@@ -139,6 +139,7 @@ func getResponse(role model.DBRole) model.Role {
 		Name:      role.Name,
 		Code:      role.Code,
 		Level:     role.Level,
+		IsAdmin:   role.IsAdmin,
 		CreatedAt: role.CreatedAt,
 		UpdatedAt: role.UpdatedAt,
 	}

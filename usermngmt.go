@@ -56,7 +56,7 @@ func Init(config Config) (*Service, error) {
 		return nil, err
 	}
 
-	logger.Init("usermngmt", "")
+	logger.Init(fmt.Sprintf("%s-usermngmt", config.TablePrefix), "")
 
 	// Set database
 	database.Set(db, config.TablePrefix)

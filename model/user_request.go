@@ -41,7 +41,6 @@ type UserAllQuery struct {
 	Keyword string
 	RoleID  string
 	Status  string
-	Deleted string // true or false
 	Sort    interface{}
 	Other   map[string]interface{} // query fields in other object
 }

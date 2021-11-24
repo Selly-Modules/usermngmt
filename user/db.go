@@ -18,6 +18,7 @@ func isPhoneNumberOrEmailExisted(ctx context.Context, phone, email string) bool 
 	)
 	// Find
 	cond := bson.M{
+		"deleted": false,
 		"$or": []bson.M{
 			{
 				"phone": phone,
@@ -44,7 +45,8 @@ func isPhoneNumberExisted(ctx context.Context, phone string) bool {
 	)
 	// Find
 	cond := bson.M{
-		"phone": phone,
+		"phone":   phone,
+		"deleted": false,
 	}
 	total, err := col.CountDocuments(ctx, cond)
 	if err != nil {
@@ -63,7 +65,8 @@ func isEmailExisted(ctx context.Context, email string) bool {
 	)
 	// Find
 	cond := bson.M{
-		"email": email,
+		"email":   email,
+		"deleted": false,
 	}
 	total, err := col.CountDocuments(ctx, cond)
 	if err != nil {
@@ -76,7 +79,7 @@ func isEmailExisted(ctx context.Context, email string) bool {
 	return total != 0
 }
 
-func isRoleIDExisted(ctx context.Context, roleID primitive.ObjectID) bool {
+func isRoleExisted(ctx context.Context, roleID primitive.ObjectID) bool {
 	var (
 		col = database.GetRoleCol()
 	)
@@ -90,7 +93,6 @@ func isRoleIDExisted(ctx context.Context, roleID primitive.ObjectID) bool {
 			"condition": cond,
 			"err":       err.Error(),
 		})
-		return false
 	}
 	return total != 0
 }
@@ -174,7 +176,7 @@ func findByID(ctx context.Context, id primitive.ObjectID) (model.DBUser, error) 
 		doc model.DBUser
 		col = database.GetUserCol()
 	)
-	err := col.FindOne(ctx, bson.M{"_id": id}).Decode(&doc)
+	err := col.FindOne(ctx, bson.M{"_id": id, "deleted": false}).Decode(&doc)
 	return doc, err
 }
 

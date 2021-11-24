@@ -32,7 +32,7 @@ func Create(payload model.UserCreateOptions) (result string, err error) {
 		err = errors.New("invalid role id data")
 		return
 	}
-	if !isRoleIDExisted(ctx, roleID) {
+	if !isRoleExisted(ctx, roleID) {
 		err = errors.New("role id does not exist")
 		return
 	}
@@ -113,7 +113,6 @@ func All(queryParams model.UserAllQuery) (r model.UserAll) {
 		Status:  queryParams.Status,
 		Sort:    queryParams.Sort,
 		Other:   queryParams.Other,
-		Deleted: queryParams.Deleted,
 	}
 
 	// Assign condition
@@ -123,6 +122,7 @@ func All(queryParams model.UserAllQuery) (r model.UserAll) {
 	query.AssignStatus(cond)
 	query.AssignDeleted(cond)
 	query.AssignOther(cond)
+	cond["deleted"] = false
 
 	wg.Add(1)
 	go func() {
@@ -202,7 +202,7 @@ func UpdateByUserID(userID string, payload model.UserUpdateOptions) error {
 	if !isValid {
 		return errors.New("invalid role id data")
 	}
-	if !isRoleIDExisted(ctx, roleID) {
+	if !isRoleExisted(ctx, roleID) {
 		return errors.New("role id does not exist")
 	}
 
@@ -316,6 +316,9 @@ func ChangeUserStatus(userID, newStatus string) error {
 	if !isValid {
 		return errors.New("invalid user id data")
 	}
+	if user, _ := findByID(ctx, id); user.ID.IsZero() {
+		return errors.New("user not found")
+	}
 
 	// Update status
 	if err := updateOneByCondition(ctx, bson.M{"_id": id}, bson.M{
@@ -340,6 +343,9 @@ func ChangeAllUsersStatus(roleID, status string) error {
 	id, isValid := mongodb.NewIDFromString(roleID)
 	if !isValid {
 		return errors.New("invalid role id data")
+	}
+	if !isRoleExisted(ctx, id) {
+		return errors.New("role not found")
 	}
 
 	// Setup condition
@@ -377,7 +383,8 @@ func LoginWithEmailAndPassword(email, password string) (result model.User, err e
 
 	// Find user
 	user, _ := findOneByCondition(ctx, bson.M{
-		"email": email,
+		"email":   email,
+		"deleted": false,
 	})
 	if user.ID.IsZero() {
 		err = errors.New("user not found")

@@ -6,16 +6,17 @@ import (
 
 // User ...
 type User struct {
-	ID        string      `json:"_id"`
-	Name      string      `json:"name"`
-	Phone     string      `json:"phone"`
-	Email     string      `json:"email"`
-	Status    string      `json:"status"`
-	Role      RoleShort   `json:"role"`
-	Other     interface{} `json:"other"`
-	Avatar    interface{} `json:"avatar"`
-	CreatedAt time.Time   `json:"createdAt"`
-	UpdatedAt time.Time   `json:"updatedAt"`
+	ID                      string      `json:"_id"`
+	Name                    string      `json:"name"`
+	Phone                   string      `json:"phone"`
+	Email                   string      `json:"email"`
+	Status                  string      `json:"status"`
+	Role                    RoleShort   `json:"role"`
+	RequireToChangePassword bool        `json:"requireToChangePassword"`
+	Other                   interface{} `json:"other"`
+	Avatar                  interface{} `json:"avatar"`
+	CreatedAt               time.Time   `json:"createdAt"`
+	UpdatedAt               time.Time   `json:"updatedAt"`
 }
 
 type (

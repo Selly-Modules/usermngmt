@@ -179,10 +179,11 @@ func getResponse(ctx context.Context, user model.DBUser) model.User {
 			Level:   roleRaw.Level,
 			IsAdmin: roleRaw.IsAdmin,
 		},
-		Avatar:    user.Avatar,
-		Other:     user.Other,
-		CreatedAt: user.CreatedAt,
-		UpdatedAt: user.UpdatedAt,
+		RequireToChangePassword: user.RequireToChangePassword,
+		Avatar:                  user.Avatar,
+		Other:                   user.Other,
+		CreatedAt:               user.CreatedAt,
+		UpdatedAt:               user.UpdatedAt,
 	}
 }
 

@@ -98,6 +98,49 @@ func FindUser(userID string) (r model.User, err error) {
 	return
 }
 
+// FindUserByEmail ...
+func FindUserByEmail(email string) (r model.User, err error) {
+	var (
+		ctx = context.Background()
+	)
+
+	// Find user exists or not
+	if email == "" {
+		err = errors.New("invalid email data")
+		return
+	}
+	user, _ := findOneByCondition(ctx, bson.M{"email": email})
+	if user.ID.IsZero() {
+		err = errors.New("user not found")
+		return
+	}
+
+	r = getResponse(ctx, user)
+	return
+}
+
+// GetHashedPassword ...
+func GetHashedPassword(userID string) (result string, err error) {
+	var (
+		ctx = context.Background()
+	)
+
+	// Find user exists or not
+	id, isValid := mongodb.NewIDFromString(userID)
+	if !isValid {
+		err = errors.New("invalid email data")
+		return
+	}
+	user, _ := findByID(ctx, id)
+	if user.ID.IsZero() {
+		err = errors.New("user not found")
+		return
+	}
+
+	result = user.HashedPassword
+	return
+}
+
 // All ...
 func All(queryParams model.UserAllQuery) (r model.UserAll) {
 	var (

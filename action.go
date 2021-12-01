@@ -24,6 +24,16 @@ func (s Service) FindUser(userID string) (model.User, error) {
 	return user.FindUser(userID)
 }
 
+// FindUserByEmail ...
+func (s Service) FindUserByEmail(email string) (model.User, error) {
+	return user.FindUserByEmail(email)
+}
+
+// GetHashedPassword ...
+func (s Service) GetHashedPassword(userID string) (string, error) {
+	return user.GetHashedPassword(userID)
+}
+
 // UpdateUser ...
 func (s Service) UpdateUser(userID string, payload model.UserUpdateOptions) error {
 	return user.UpdateByUserID(userID, payload)

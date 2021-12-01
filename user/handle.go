@@ -349,6 +349,43 @@ func ChangeUserPassword(userID string, opt model.ChangePasswordOptions) error {
 	return nil
 }
 
+// ResetUserPassword ...
+func ResetUserPassword(userID string, password string) error {
+	var (
+		ctx = context.Background()
+	)
+
+	// Validate Password
+	if password == "" {
+		return errors.New("password cannot be empty")
+	}
+
+	// Validate userID
+	if _, isValid := mongodb.NewIDFromString(userID); !isValid {
+		return errors.New("invalid user id data")
+	}
+
+	// Find user
+	id, _ := mongodb.NewIDFromString(userID)
+	user, _ := findByID(ctx, id)
+	if user.ID.IsZero() {
+		return errors.New("user not found")
+	}
+
+	// Update password
+	if err := updateOneByCondition(ctx, bson.M{"_id": user.ID}, bson.M{
+		"$set": bson.M{
+			"hashedPassword":          internal.HashPassword(password),
+			"requireToChangePassword": false,
+			"updatedAt":               internal.Now(),
+		},
+	}); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // ChangeUserStatus ...
 func ChangeUserStatus(userID, newStatus string) error {
 	var (

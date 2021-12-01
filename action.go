@@ -44,6 +44,11 @@ func (s Service) ChangeUserPassword(userID string, payload model.ChangePasswordO
 	return user.ChangeUserPassword(userID, payload)
 }
 
+// ResetUserPassword ...
+func (s Service) ResetUserPassword(userID string, password string) error {
+	return user.ResetUserPassword(userID, password)
+}
+
 // ChangeUserStatus ...
 func (s Service) ChangeUserStatus(userID, newStatus string) error {
 	return user.ChangeUserStatus(userID, newStatus)

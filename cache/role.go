@@ -47,11 +47,11 @@ func Roles() {
 				})
 				return
 			}
-			log.Println("role", CachedRole{
+			log.Println("set role", CachedRole{
 				Role:        role.Code,
 				IsAdmin:     role.IsAdmin,
 				Permissions: rolePermissions,
-			})
+			}) // TODO remove
 		}(value)
 	}
 
@@ -72,5 +72,6 @@ func GetCachedRole(key string) CachedRole {
 			"err": err.Error(),
 		})
 	}
+	log.Println("get role", cachedRole) // TODO remove
 	return cachedRole
 }

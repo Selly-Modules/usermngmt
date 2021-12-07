@@ -47,7 +47,11 @@ func Roles() {
 				})
 				return
 			}
-			log.Println("role", entry)
+			log.Println("role", CachedRole{
+				Role:        role.Code,
+				IsAdmin:     role.IsAdmin,
+				Permissions: rolePermissions,
+			})
 		}(value)
 	}
 

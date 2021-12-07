@@ -63,10 +63,10 @@ func Update(permissionID string, payload model.PermissionUpdateOptions) error {
 	// Find permissionID exists or not
 	id, isValid := mongodb.NewIDFromString(permissionID)
 	if !isValid {
-		return errors.New("invalid permission id data")
+		return errors.New(internal.ErrorInvalidPermission)
 	}
 	if !isPermissionIDExisted(ctx, id) {
-		return errors.New("permission not found")
+		return errors.New(internal.ErrorNotFoundPermission)
 	}
 
 	// Setup condition
@@ -103,10 +103,10 @@ func Delete(permissionID string) error {
 	// Find permissionID exists or not
 	id, isValid := mongodb.NewIDFromString(permissionID)
 	if !isValid {
-		return errors.New("invalid permission id data")
+		return errors.New(internal.ErrorInvalidPermission)
 	}
 	if !isPermissionIDExisted(ctx, id) {
-		return errors.New("permission not found")
+		return errors.New(internal.ErrorNotFoundPermission)
 	}
 
 	// Delete

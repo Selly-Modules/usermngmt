@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/Selly-Modules/logger"
+	"github.com/Selly-Modules/usermngmt/internal"
 )
 
 // RoleCreateOptions ...
@@ -34,7 +35,7 @@ func (co RoleCreateOptions) Validate() error {
 		logger.Error("usermngmt - Role - Create: no name data", logger.LogData{
 			"payload": co,
 		})
-		return errors.New("no name data")
+		return errors.New(internal.ErrorInvalidName)
 	}
 
 	return nil
@@ -47,7 +48,7 @@ func (co RoleUpdateOptions) Validate() error {
 		logger.Error("usermngmt - Role - Update: no name data", logger.LogData{
 			"payload": co,
 		})
-		return errors.New("no name data")
+		return errors.New(internal.ErrorInvalidName)
 	}
 
 	return nil

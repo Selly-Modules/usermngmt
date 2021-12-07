@@ -7,6 +7,7 @@ import (
 	"github.com/Selly-Modules/logger"
 	"github.com/Selly-Modules/mongodb"
 	"github.com/Selly-Modules/usermngmt/cache"
+	configMoudle "github.com/Selly-Modules/usermngmt/config"
 	"github.com/Selly-Modules/usermngmt/database"
 	"github.com/Selly-Modules/usermngmt/internal"
 )
@@ -22,6 +23,12 @@ type Config struct {
 	MongoDB MongoDBConfig
 	// Table prefix, each service has its own prefix
 	TablePrefix string
+
+	// Email is unique
+	EmailIsUnique bool
+
+	// phone number is unique
+	PhoneNumberIsUnique bool
 }
 
 // Service ...
@@ -60,6 +67,12 @@ func Init(config Config) (*Service, error) {
 
 	// Set database
 	database.Set(db, config.TablePrefix)
+
+	// Set config module
+	configMoudle.Set(&configMoudle.Configuration{
+		EmailIsUnique:       config.EmailIsUnique,
+		PhoneNumberIsUnique: config.PhoneNumberIsUnique,
+	})
 
 	// Init cache
 	cache.Init()

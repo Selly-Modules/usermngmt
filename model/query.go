@@ -72,7 +72,7 @@ func (q *CommonQuery) SetDefaultLimit() {
 
 // AssignOther ...
 func (q *CommonQuery) AssignOther(cond bson.M) {
-	// Query fields in other object 
+	// Query fields in other object
 	if len(q.Other) > 0 {
 		for key, value := range q.Other {
 			cond["other."+key] = value

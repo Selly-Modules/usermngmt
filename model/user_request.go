@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/Selly-Modules/logger"
+	"github.com/Selly-Modules/usermngmt/internal"
 )
 
 // UserCreateOptions ...
@@ -58,7 +59,7 @@ func (co UserCreateOptions) Validate() error {
 		logger.Error("usermngmt - User - Create: no name data", logger.LogData{
 			"payload": co,
 		})
-		return errors.New("no name data")
+		return errors.New(internal.ErrorInvalidName)
 	}
 
 	// Phone
@@ -66,7 +67,7 @@ func (co UserCreateOptions) Validate() error {
 		logger.Error("usermngmt - User - Create: no phone data", logger.LogData{
 			"payload": co,
 		})
-		return errors.New("no phone data")
+		return errors.New(internal.ErrorInvalidPhoneNumber)
 	}
 
 	// Email
@@ -74,7 +75,7 @@ func (co UserCreateOptions) Validate() error {
 		logger.Error("usermngmt - User - Create: no email data", logger.LogData{
 			"payload": co,
 		})
-		return errors.New("no email data")
+		return errors.New(internal.ErrorInvalidEmail)
 	}
 
 	// Password
@@ -82,7 +83,7 @@ func (co UserCreateOptions) Validate() error {
 		logger.Error("usermngmt - User - Create: no password data", logger.LogData{
 			"payload": co,
 		})
-		return errors.New("no password data")
+		return errors.New(internal.ErrorInvalidPassword)
 	}
 
 	// Status
@@ -90,7 +91,7 @@ func (co UserCreateOptions) Validate() error {
 		logger.Error("usermngmt - User - Create: no status data", logger.LogData{
 			"payload": co,
 		})
-		return errors.New("no status data")
+		return errors.New(internal.ErrorInvalidStatus)
 	}
 
 	// RoleID
@@ -98,7 +99,7 @@ func (co UserCreateOptions) Validate() error {
 		logger.Error("usermngmt - User - Create: no roleID data", logger.LogData{
 			"payload": co,
 		})
-		return errors.New("no role id data")
+		return errors.New(internal.ErrorInvalidRole)
 	}
 
 	return nil
@@ -111,7 +112,7 @@ func (uo UserUpdateOptions) Validate() error {
 		logger.Error("usermngmt - User - Update: no name data", logger.LogData{
 			"payload": uo,
 		})
-		return errors.New("no name data")
+		return errors.New(internal.ErrorInvalidName)
 	}
 
 	// Phone
@@ -119,7 +120,7 @@ func (uo UserUpdateOptions) Validate() error {
 		logger.Error("usermngmt - User - Update: no phone data", logger.LogData{
 			"payload": uo,
 		})
-		return errors.New("no phone data")
+		return errors.New(internal.ErrorInvalidPhoneNumber)
 	}
 
 	// Email
@@ -127,7 +128,7 @@ func (uo UserUpdateOptions) Validate() error {
 		logger.Error("usermngmt - User - Update: no email data", logger.LogData{
 			"payload": uo,
 		})
-		return errors.New("no email data")
+		return errors.New(internal.ErrorInvalidEmail)
 	}
 
 	// RoleID
@@ -135,7 +136,7 @@ func (uo UserUpdateOptions) Validate() error {
 		logger.Error("usermngmt - User - Update: no roleID data", logger.LogData{
 			"payload": uo,
 		})
-		return errors.New("no role id data")
+		return errors.New(internal.ErrorInvalidRole)
 	}
 
 	return nil
@@ -144,11 +145,18 @@ func (uo UserUpdateOptions) Validate() error {
 // Validate ...
 func (co ChangePasswordOptions) Validate() error {
 	// OldPassword, NewPassword
-	if co.OldPassword == "" || co.NewPassword == "" {
-		logger.Error("usermngmt - User - ChangePassword: old or new password cannot be empty", logger.LogData{
+	if co.OldPassword == "" {
+		logger.Error("usermngmt - User - ChangePassword: no old password data", logger.LogData{
 			"payload": co,
 		})
-		return errors.New("old or new password cannot be empty")
+		return errors.New(internal.ErrorInvalidOldPassword)
+	}
+
+	if co.NewPassword == "" {
+		logger.Error("usermngmt - User - ChangePassword: no new password data", logger.LogData{
+			"payload": co,
+		})
+		return errors.New(internal.ErrorInvalidNewPassword)
 	}
 
 	return nil

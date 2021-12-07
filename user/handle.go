@@ -8,6 +8,7 @@ import (
 	"github.com/Selly-Modules/logger"
 	"github.com/Selly-Modules/mongodb"
 	"github.com/Selly-Modules/usermngmt/cache"
+	"github.com/Selly-Modules/usermngmt/config"
 	"github.com/Selly-Modules/usermngmt/internal"
 	"github.com/Selly-Modules/usermngmt/model"
 	"github.com/thoas/go-funk"
@@ -29,18 +30,26 @@ func Create(payload model.UserCreateOptions) (result string, err error) {
 	//  Find roleID exists or not
 	roleID, isValid := mongodb.NewIDFromString(payload.RoleID)
 	if !isValid {
-		err = errors.New("invalid role id data")
+		err = errors.New(internal.ErrorInvalidRole)
 		return
 	}
 	if !isRoleExisted(ctx, roleID) {
-		err = errors.New("role id does not exist")
+		err = errors.New(internal.ErrorNotFoundRole)
 		return
 	}
 
 	// Find phone number,email exists or not
-	if isPhoneNumberOrEmailExisted(ctx, payload.Phone, payload.Email) {
-		err = errors.New("phone number or email already existed")
-		return
+	if config.GetInstance().PhoneNumberIsUnique {
+		if isPhoneNumberExisted(ctx, payload.Phone) {
+			err = errors.New(internal.ErrorAlreadyExistedPhoneNumber)
+			return
+		}
+	}
+	if config.GetInstance().EmailIsUnique {
+		if isEmailExisted(ctx, payload.Email) {
+			err = errors.New(internal.ErrorAlreadyExistedEmail)
+			return
+		}
 	}
 
 	// New user data from payload
@@ -85,12 +94,12 @@ func FindUser(userID string) (r model.User, err error) {
 	// Find user exists or not
 	id, isValid := mongodb.NewIDFromString(userID)
 	if !isValid {
-		err = errors.New("invalid user id data")
+		err = errors.New(internal.ErrorInvalidUser)
 		return
 	}
 	user, _ := findByID(ctx, id)
 	if user.ID.IsZero() {
-		err = errors.New("user not found")
+		err = errors.New(internal.ErrorNotFoundUser)
 		return
 	}
 
@@ -106,12 +115,12 @@ func FindUserByEmail(email string) (r model.User, err error) {
 
 	// Find user exists or not
 	if email == "" {
-		err = errors.New("invalid email data")
+		err = errors.New(internal.ErrorInvalidEmail)
 		return
 	}
 	user, _ := findOneByCondition(ctx, bson.M{"email": email})
 	if user.ID.IsZero() {
-		err = errors.New("user not found")
+		err = errors.New(internal.ErrorNotFoundUser)
 		return
 	}
 
@@ -128,12 +137,12 @@ func GetHashedPassword(userID string) (result string, err error) {
 	// Find user exists or not
 	id, isValid := mongodb.NewIDFromString(userID)
 	if !isValid {
-		err = errors.New("invalid email data")
+		err = errors.New(internal.ErrorInvalidUser)
 		return
 	}
 	user, _ := findByID(ctx, id)
 	if user.ID.IsZero() {
-		err = errors.New("user not found")
+		err = errors.New(internal.ErrorNotFoundUser)
 		return
 	}
 
@@ -244,31 +253,35 @@ func UpdateByUserID(userID string, payload model.UserUpdateOptions) error {
 	//  Find roleID exists or not
 	roleID, isValid := mongodb.NewIDFromString(payload.RoleID)
 	if !isValid {
-		return errors.New("invalid role id data")
+		return errors.New(internal.ErrorInvalidRole)
 	}
 	if !isRoleExisted(ctx, roleID) {
-		return errors.New("role id does not exist")
+		return errors.New(internal.ErrorNotFoundRole)
 	}
 
 	// Find user exists or not
 	id, isValid := mongodb.NewIDFromString(userID)
 	if !isValid {
-		return errors.New("invalid user id data")
+		return errors.New(internal.ErrorInvalidUser)
 	}
 	user, _ := findByID(ctx, id)
 	if user.ID.IsZero() {
-		return errors.New("user not found")
+		return errors.New(internal.ErrorNotFoundUser)
 	}
 
 	// Find phone number,email exists or not
-	if user.Phone != payload.Phone {
-		if isPhoneNumberExisted(ctx, payload.Phone) {
-			return errors.New("phone number already existed")
+	if config.GetInstance().PhoneNumberIsUnique {
+		if user.Phone != payload.Phone {
+			if isPhoneNumberExisted(ctx, payload.Phone) {
+				return errors.New(internal.ErrorAlreadyExistedPhoneNumber)
+			}
 		}
 	}
-	if user.Email != payload.Email {
-		if isEmailExisted(ctx, payload.Email) {
-			return errors.New("email already existed")
+	if config.GetInstance().EmailIsUnique {
+		if user.Email != payload.Email {
+			if isEmailExisted(ctx, payload.Email) {
+				return errors.New(internal.ErrorAlreadyExistedEmail)
+			}
 		}
 	}
 
@@ -320,19 +333,19 @@ func ChangeUserPassword(userID string, opt model.ChangePasswordOptions) error {
 			"payload": opt,
 			"userID":  userID,
 		})
-		return errors.New("invalid user id data")
+		return errors.New(internal.ErrorInvalidUser)
 	}
 
 	// Find user
 	id, _ := mongodb.NewIDFromString(userID)
 	user, _ := findByID(ctx, id)
 	if user.ID.IsZero() {
-		return errors.New("user not found")
+		return errors.New(internal.ErrorNotFoundUser)
 	}
 
 	// Check old password
 	if isValid := internal.CheckPasswordHash(opt.OldPassword, user.HashedPassword); !isValid {
-		return errors.New("the password is incorrect")
+		return errors.New(internal.ErrorIncorrectPassword)
 	}
 
 	// Update password
@@ -357,19 +370,19 @@ func ResetUserPassword(userID string, password string) error {
 
 	// Validate Password
 	if password == "" {
-		return errors.New("password cannot be empty")
+		return errors.New(internal.ErrorInvalidPassword)
 	}
 
 	// Validate userID
 	if _, isValid := mongodb.NewIDFromString(userID); !isValid {
-		return errors.New("invalid user id data")
+		return errors.New(internal.ErrorInvalidUser)
 	}
 
 	// Find user
 	id, _ := mongodb.NewIDFromString(userID)
 	user, _ := findByID(ctx, id)
 	if user.ID.IsZero() {
-		return errors.New("user not found")
+		return errors.New(internal.ErrorNotFoundUser)
 	}
 
 	// Update password
@@ -395,10 +408,10 @@ func ChangeUserStatus(userID, newStatus string) error {
 	// Validate userID
 	id, isValid := mongodb.NewIDFromString(userID)
 	if !isValid {
-		return errors.New("invalid user id data")
+		return errors.New(internal.ErrorInvalidUser)
 	}
 	if user, _ := findByID(ctx, id); user.ID.IsZero() {
-		return errors.New("user not found")
+		return errors.New(internal.ErrorNotFoundUser)
 	}
 
 	// Update status
@@ -423,10 +436,10 @@ func ChangeAllUsersStatus(roleID, status string) error {
 	// Validate roleID
 	id, isValid := mongodb.NewIDFromString(roleID)
 	if !isValid {
-		return errors.New("invalid role id data")
+		return errors.New(internal.ErrorInvalidRole)
 	}
 	if !isRoleExisted(ctx, id) {
-		return errors.New("role not found")
+		return errors.New(internal.ErrorNotFoundRole)
 	}
 
 	// Setup condition
@@ -457,8 +470,12 @@ func LoginWithEmailAndPassword(email, password string) (result model.User, err e
 	)
 
 	// Validate email, password
-	if email == "" || password == "" {
-		err = errors.New("email or password cannot be empty")
+	if email == "" {
+		err = errors.New(internal.ErrorInvalidEmail)
+		return
+	}
+	if password == "" {
+		err = errors.New(internal.ErrorInvalidPassword)
 		return
 	}
 
@@ -468,13 +485,13 @@ func LoginWithEmailAndPassword(email, password string) (result model.User, err e
 		"deleted": false,
 	})
 	if user.ID.IsZero() {
-		err = errors.New("user not found")
+		err = errors.New(internal.ErrorNotFoundUser)
 		return
 	}
 
 	// Check Password
 	if !internal.CheckPasswordHash(password, user.HashedPassword) {
-		err = errors.New("the password is incorrect")
+		err = errors.New(internal.ErrorIncorrectPassword)
 		return
 	}
 
@@ -541,17 +558,17 @@ func UpdateAvatar(userID string, avatar interface{}) error {
 	)
 
 	if avatar == nil {
-		return errors.New("no avatar data")
+		return errors.New(internal.ErrorInvalidAvatar)
 	}
 
 	// Find user exists or not
 	id, isValid := mongodb.NewIDFromString(userID)
 	if !isValid {
-		return errors.New("invalid role id data")
+		return errors.New(internal.ErrorInvalidUser)
 	}
 	user, _ := findByID(ctx, id)
 	if user.ID.IsZero() {
-		return errors.New("user not found")
+		return errors.New(internal.ErrorNotFoundUser)
 	}
 
 	// Setup condition
@@ -584,11 +601,11 @@ func Delete(userID string) error {
 	// Find user exists or not
 	id, isValid := mongodb.NewIDFromString(userID)
 	if !isValid {
-		return errors.New("invalid role id data")
+		return errors.New(internal.ErrorInvalidUser)
 	}
 	user, _ := findByID(ctx, id)
 	if user.ID.IsZero() {
-		return errors.New("user not found")
+		return errors.New(internal.ErrorNotFoundUser)
 	}
 
 	// Setup condition

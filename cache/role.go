@@ -3,6 +3,7 @@ package cache
 import (
 	"context"
 	"encoding/json"
+	"log"
 	"sync"
 
 	"github.com/Selly-Modules/logger"
@@ -46,6 +47,7 @@ func Roles() {
 				})
 				return
 			}
+			log.Println("role", entry)
 		}(value)
 	}
 

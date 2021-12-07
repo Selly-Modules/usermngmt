@@ -62,12 +62,12 @@ func Update(roleID string, payload model.RoleUpdateOptions) error {
 	// Validate roleID
 	id, isValid := mongodb.NewIDFromString(roleID)
 	if !isValid {
-		return errors.New("invalid role id data")
+		return errors.New(internal.ErrorInvalidRole)
 	}
 
 	// Find roleID exists or not
 	if !isRoleIDExisted(ctx, id) {
-		return errors.New("role not found")
+		return errors.New(internal.ErrorNotFoundRole)
 	}
 
 	// Setup condition
@@ -154,12 +154,12 @@ func FindRole(roleID string) (r model.Role, err error) {
 	// Find role exists or not
 	id, isValid := mongodb.NewIDFromString(roleID)
 	if !isValid {
-		err = errors.New("invalid role id data")
+		err = errors.New(internal.ErrorInvalidRole)
 		return
 	}
 	role, _ := findByID(ctx, id)
 	if role.ID.IsZero() {
-		err = errors.New("role not found")
+		err = errors.New(internal.ErrorNotFoundRole)
 		return
 	}
 

@@ -12,33 +12,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func isPhoneNumberOrEmailExisted(ctx context.Context, phone, email string) bool {
-	var (
-		col = database.GetUserCol()
-	)
-	// Find
-	cond := bson.M{
-		"deleted": false,
-		"$or": []bson.M{
-			{
-				"phone": phone,
-			},
-			{
-				"email": email,
-			},
-		},
-	}
-	total, err := col.CountDocuments(ctx, cond)
-	if err != nil {
-		logger.Error("usermngmt - User - CountDocuments", logger.LogData{
-			"condition": cond,
-			"err":       err.Error(),
-		})
-		return true
-	}
-	return total != 0
-}
-
 func isPhoneNumberExisted(ctx context.Context, phone string) bool {
 	var (
 		col = database.GetUserCol()

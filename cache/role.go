@@ -3,7 +3,6 @@ package cache
 import (
 	"context"
 	"encoding/json"
-	"log"
 	"sync"
 
 	"github.com/Selly-Modules/logger"
@@ -47,11 +46,6 @@ func Roles() {
 				})
 				return
 			}
-			log.Println("set role", CachedRole{
-				Role:        role.Code,
-				IsAdmin:     role.IsAdmin,
-				Permissions: rolePermissions,
-			}) // TODO remove
 		}(value)
 	}
 
@@ -74,6 +68,5 @@ func GetCachedRole(key string) CachedRole {
 			"err": err.Error(),
 		})
 	}
-	log.Println("get role", cachedRole) // TODO remove
 	return cachedRole
 }

@@ -17,10 +17,19 @@ type MongoDBConfig struct {
 	Host, User, Password, DBName, Mechanism, Source string
 }
 
+// RedisConfig ...
+type RedisConfig struct {
+	URI, Password string
+}
+
 // Config ...
 type Config struct {
 	// MongoDB config, for save documents
 	MongoDB MongoDBConfig
+
+	// Redis
+	Redis RedisConfig
+
 	// Table prefix, each service has its own prefix
 	TablePrefix string
 
@@ -75,7 +84,7 @@ func Init(config Config) (*Service, error) {
 	})
 
 	// Init cache
-	cache.Init()
+	cache.Init(config.Redis.URI, config.Redis.Password)
 
 	s = &Service{
 		config: config,

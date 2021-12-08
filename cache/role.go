@@ -36,12 +36,12 @@ func Roles() {
 			}
 
 			// Cache Role
-			entry, _ := json.Marshal(CachedRole{
+			entry := CachedRole{
 				Role:        role.Code,
 				IsAdmin:     role.IsAdmin,
 				Permissions: rolePermissions,
-			})
-			if err := mc.Set(role.ID.Hex(), entry); err != nil {
+			}
+			if err := SetKeyValue(role.ID.Hex(), entry, 0); err != nil {
 				logger.Error("usermngmt - CacheRole", logger.LogData{
 					"err": err.Error(),
 				})
@@ -61,13 +61,15 @@ func Roles() {
 
 // GetCachedRole ...
 func GetCachedRole(key string) CachedRole {
-	entry, err := mc.Get(key)
+	value, err := GetValueByKey(key)
 	if err != nil {
 		Roles()
-		entry, _ = mc.Get(key)
+		value, _ = GetValueByKey(key)
 	}
+
+	// Unmarshal data
 	var cachedRole CachedRole
-	if err = json.Unmarshal(entry, &cachedRole); err != nil {
+	if err := json.Unmarshal(value, &cachedRole); err != nil {
 		logger.Error("usermngmt - GetCachedRole - Unmarshal", logger.LogData{
 			"err": err.Error(),
 		})

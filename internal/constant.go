@@ -4,7 +4,7 @@ package internal
 const (
 	timezoneHCM = "Asia/Ho_Chi_Minh"
 
-	passwordHashingCost = 14
+	passwordHashingCost = 12
 
 	TablePrefixDefault = "usermngmt"
 

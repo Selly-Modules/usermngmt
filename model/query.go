@@ -3,6 +3,7 @@ package model
 import (
 	"github.com/Selly-Modules/mongodb"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
@@ -75,7 +76,18 @@ func (q *CommonQuery) AssignOther(cond bson.M) {
 	// Query fields in other object
 	if len(q.Other) > 0 {
 		for key, value := range q.Other {
-			cond["other."+key] = value
+			switch v := value.(type) {
+			case []primitive.ObjectID:
+				cond["other."+key] = bson.M{
+					"$in": v,
+				}
+			case []string:
+				cond["other."+key] = bson.M{
+					"$in": v,
+				}
+			default:
+				cond["other."+key] = value
+			}
 		}
 	}
 }

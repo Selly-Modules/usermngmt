@@ -5,6 +5,7 @@ import (
 
 	"github.com/Selly-Modules/logger"
 	"github.com/Selly-Modules/usermngmt/internal"
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 // UserCreateOptions ...
@@ -44,6 +45,7 @@ type UserAllQuery struct {
 	Status  string
 	Sort    interface{}
 	Other   map[string]interface{} // query fields in other object
+	Cond    bson.M
 }
 
 // UserCountQuery ...

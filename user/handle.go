@@ -157,6 +157,10 @@ func All(queryParams model.UserAllQuery) (r model.UserAll) {
 		wg   sync.WaitGroup
 		cond = bson.M{}
 	)
+	if queryParams.Cond != nil {
+		cond = queryParams.Cond
+	}
+
 	query := model.CommonQuery{
 		Page:    queryParams.Page,
 		Limit:   queryParams.Limit,

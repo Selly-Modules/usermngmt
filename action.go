@@ -49,6 +49,11 @@ func (s Service) ResetUserPassword(userID string, password string) error {
 	return user.ResetUserPassword(userID, password)
 }
 
+// ResetAndRequireToChangeUserPassword ...
+func (s Service) ResetAndRequireToChangeUserPassword(userID string, password string) error {
+	return user.ResetAndRequireToChangeUserPassword(userID, password)
+}
+
 // ChangeUserStatus ...
 func (s Service) ChangeUserStatus(userID, newStatus string) error {
 	return user.ChangeUserStatus(userID, newStatus)

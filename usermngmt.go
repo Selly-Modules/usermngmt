@@ -6,16 +6,12 @@ import (
 
 	"github.com/Selly-Modules/logger"
 	"github.com/Selly-Modules/mongodb"
+
 	"github.com/Selly-Modules/usermngmt/cache"
 	configMoudle "github.com/Selly-Modules/usermngmt/config"
 	"github.com/Selly-Modules/usermngmt/database"
 	"github.com/Selly-Modules/usermngmt/internal"
 )
-
-// MongoDBConfig ...
-type MongoDBConfig struct {
-	Host, User, Password, DBName, Mechanism, Source string
-}
 
 // RedisConfig ...
 type RedisConfig struct {
@@ -25,7 +21,7 @@ type RedisConfig struct {
 // Config ...
 type Config struct {
 	// MongoDB config, for save documents
-	MongoDB MongoDBConfig
+	MongoDB mongodb.Config
 
 	// Redis
 	Redis RedisConfig
@@ -59,14 +55,7 @@ func Init(config Config) (*Service, error) {
 	}
 
 	// Connect MongoDB
-	db, err := mongodb.Connect(
-		config.MongoDB.Host,
-		config.MongoDB.User,
-		config.MongoDB.Password,
-		config.MongoDB.DBName,
-		config.MongoDB.Mechanism,
-		config.MongoDB.Source,
-	)
+	db, err := mongodb.Connect(config.MongoDB)
 	if err != nil {
 		fmt.Println("Cannot init module User MANAGEMENT", err)
 		return nil, err

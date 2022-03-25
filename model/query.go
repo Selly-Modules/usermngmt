@@ -17,6 +17,7 @@ type CommonQuery struct {
 	Deleted string
 	Sort    interface{}
 	Other   map[string]interface{}
+	RoleIDs []primitive.ObjectID
 }
 
 // AssignDeleted ...
@@ -41,6 +42,17 @@ func (q *CommonQuery) AssignRoleID(cond bson.M) {
 	if q.RoleID != "" {
 		if id, isValid := mongodb.NewIDFromString(q.RoleID); isValid {
 			cond["roleId"] = id
+		}
+	}
+}
+
+// AssignRoleIDs ...
+func (q *CommonQuery) AssignRoleIDs(cond bson.M) {
+	if len(q.RoleIDs) == 1 {
+		cond["roleId"] = q.RoleIDs[0]
+	} else if len(q.RoleIDs) > 1 {
+		cond["roleId"] = bson.M{
+			"$in": q.RoleIDs,
 		}
 	}
 }

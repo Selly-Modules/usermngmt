@@ -79,6 +79,33 @@ func roleFindByID(ctx context.Context, id primitive.ObjectID) (model.DBRole, err
 	return doc, err
 }
 
+func permissionFindByCondition(ctx context.Context, cond interface{}, opts ...*options.FindOptions) (docs []model.DBPermission) {
+	var (
+		col = database.GetPermissionCol()
+	)
+	docs = make([]model.DBPermission, 0)
+
+	cursor, err := col.Find(ctx, cond, opts...)
+	if err != nil {
+		logger.Error("usermngmt - Permission - Find", logger.LogData{
+			"cond": cond,
+			"opts": opts,
+			"err":  err.Error(),
+		})
+		return
+	}
+	defer cursor.Close(ctx)
+	if err = cursor.All(ctx, &docs); err != nil {
+		logger.Error("usermngmt - Permission - Decode", logger.LogData{
+			"cond": cond,
+			"opts": opts,
+			"err":  err.Error(),
+		})
+		return
+	}
+	return
+}
+
 // permissionCountByCondition ...
 func permissionCountByCondition(ctx context.Context, cond interface{}) int64 {
 	var (

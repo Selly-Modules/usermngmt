@@ -203,6 +203,74 @@ func All(queryParams model.UserAllQuery) (r model.UserAll) {
 	return
 }
 
+// GetUsersByPermission ...
+func GetUsersByPermission(queryParams model.UserByPermissionQuery) (r model.UserAll) {
+	var (
+		ctx   = context.Background()
+		wg    sync.WaitGroup
+		cond  = bson.M{}
+		roles = make([]primitive.ObjectID, 0)
+	)
+	// Validate query
+	if err := queryParams.Validate(); err != nil {
+		return
+	}
+
+	if queryParams.Cond != nil {
+		cond = queryParams.Cond
+	}
+
+	// Get role by permission
+	permissions := permissionFindByCondition(ctx, bson.M{"code": queryParams.Permission})
+	for _, value := range permissions {
+		roles = append(roles, value.RoleID)
+	}
+	if len(roles) < 0 {
+		return
+	}
+
+	query := model.CommonQuery{
+		Page:    queryParams.Page,
+		Limit:   queryParams.Limit,
+		Keyword: queryParams.Keyword,
+		Status:  queryParams.Status,
+		Sort:    queryParams.Sort,
+		Other:   queryParams.Other,
+		RoleIDs: roles,
+	}
+
+	// Assign condition
+	query.SetDefaultLimit()
+	query.AssignKeyword(cond)
+	query.AssignRoleIDs(cond)
+	query.AssignStatus(cond)
+	query.AssignDeleted(cond)
+	query.AssignOther(cond)
+	cond["deleted"] = false
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		docs := findByCondition(ctx, cond, query.GetFindOptionsUsingPage())
+		res := make([]model.User, 0)
+		for _, doc := range docs {
+			res = append(res, getResponse(ctx, doc))
+		}
+		r.List = res
+	}()
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		r.Total = countByCondition(ctx, cond)
+	}()
+
+	wg.Wait()
+
+	r.Limit = query.Limit
+	return
+}
+
 // Count  ...
 func Count(queryParams model.UserCountQuery) int64 {
 	var (

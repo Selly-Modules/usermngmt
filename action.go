@@ -64,6 +64,11 @@ func (s Service) GetAllUsers(query model.UserAllQuery) model.UserAll {
 	return user.All(query)
 }
 
+// GetUsersByPermission ...
+func (s Service) GetUsersByPermission(query model.UserByPermissionQuery) model.UserAll {
+	return user.GetUsersByPermission(query)
+}
+
 // CountAllUsers ...
 func (s Service) CountAllUsers(query model.UserCountQuery) int64 {
 	return user.Count(query)

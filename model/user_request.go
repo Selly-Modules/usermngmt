@@ -48,6 +48,18 @@ type UserAllQuery struct {
 	Cond    bson.M
 }
 
+// UserByPermissionQuery ...
+type UserByPermissionQuery struct {
+	Page       int64
+	Limit      int64
+	Keyword    string
+	Status     string
+	Permission string // permission code
+	Sort       interface{}
+	Other      map[string]interface{} // query fields in other object
+	Cond       bson.M
+}
+
 // UserCountQuery ...
 type UserCountQuery struct {
 	RoleID string
@@ -159,6 +171,19 @@ func (co ChangePasswordOptions) Validate() error {
 			"payload": co,
 		})
 		return errors.New(internal.ErrorInvalidNewPassword)
+	}
+
+	return nil
+}
+
+// Validate ...
+func (q UserByPermissionQuery) Validate() error {
+	// OldPassword, NewPassword
+	if q.Permission == "" {
+		logger.Error("usermngmt - User - GetUsersByPermission : invalid permission", logger.LogData{
+			"payload": q,
+		})
+		return errors.New(internal.ErrorInvalidPermission)
 	}
 
 	return nil

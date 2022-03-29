@@ -225,6 +225,13 @@ func GetUsersByPermission(queryParams model.UserByPermissionQuery) (r model.User
 	for _, value := range permissions {
 		roles = append(roles, value.RoleID)
 	}
+
+	// Get admin role
+	adminRoles := roleFindByCondition(ctx, bson.M{"isAdmin": true})
+	for _, value := range adminRoles {
+		roles = append(roles, value.ID)
+	}
+
 	if len(roles) < 0 {
 		return
 	}

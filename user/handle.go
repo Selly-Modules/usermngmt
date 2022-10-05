@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"errors"
+	"fmt"
 	"sync"
 
 	"github.com/Selly-Modules/logger"
@@ -409,8 +410,9 @@ func ChangeUserPassword(userID string, opt model.ChangePasswordOptions) error {
 	// Validate userID
 	if _, isValid := mongodb.NewIDFromString(userID); !isValid {
 		logger.Error("usermngmt - ChangePassword: invalid userID data", logger.LogData{
-			"payload": opt,
-			"userID":  userID,
+			Source:  "usermngmt.user.ChangeUserPassword",
+			Message: "usermngmt - ChangePassword: invalid userID data",
+			Data:    fmt.Sprintf("userId: %s - opt: %s", userID, opt),
 		})
 		return errors.New(internal.ErrorInvalidUser)
 	}
@@ -624,16 +626,18 @@ func HasPermission(userID, permission string) (result bool) {
 	// Validate userID, permission
 	if userID == "" || permission == "" {
 		logger.Error("usermngmt - HasPermission: email or password cannot be empty", logger.LogData{
-			"userID":     userID,
-			"permission": permission,
+			Source:  "usermngmt.user.HasPermission",
+			Message: "usermngmt - HasPermission: email or password cannot be empty",
+			Data:    fmt.Sprintf("userId: %s - permission: %s", userID, permission),
 		})
 		return
 	}
 	id, isValid := mongodb.NewIDFromString(userID)
 	if !isValid {
 		logger.Error("usermngmt - HasPermission: invalid user id", logger.LogData{
-			"userID":     userID,
-			"permission": permission,
+			Source:  "usermngmt.user.HasPermission",
+			Message: "usermngmt - HasPermission: invalid user id",
+			Data:    fmt.Sprintf("userId: %s - permission: %s", userID, permission),
 		})
 		return
 	}
@@ -642,8 +646,9 @@ func HasPermission(userID, permission string) (result bool) {
 	user, _ := findByID(ctx, id)
 	if user.ID.IsZero() {
 		logger.Error("usermngmt - HasPermission: user not found", logger.LogData{
-			"userID":     userID,
-			"permission": permission,
+			Source:  "usermngmt.user.HasPermission",
+			Message: "usermngmt - HasPermission: user not found",
+			Data:    fmt.Sprintf("userId: %s - permission: %s", userID, permission),
 		})
 		return
 	}

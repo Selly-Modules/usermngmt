@@ -18,18 +18,25 @@ func roleFindByCondition(ctx context.Context, cond interface{}, opts ...*options
 	cursor, err := col.Find(ctx, cond, opts...)
 	if err != nil {
 		logger.Error("usermngmt - Role - Find", logger.LogData{
-			"cond": cond,
-			"opts": opts,
-			"err":  err.Error(),
+			Source:  "usermngmt.roleFindByCondition",
+			Message: err.Error(),
+			Data: map[string]interface{}{
+				"cond": cond,
+				"opts": opts,
+			},
 		})
+
 		return
 	}
 	defer cursor.Close(ctx)
 	if err = cursor.All(ctx, &docs); err != nil {
 		logger.Error("usermngmt - Role - Decode", logger.LogData{
-			"cond": cond,
-			"opts": opts,
-			"err":  err.Error(),
+			Source:  "usermngmt.roleFindByCondition",
+			Message: err.Error(),
+			Data: map[string]interface{}{
+				"cond": cond,
+				"opts": opts,
+			},
 		})
 		return
 	}
@@ -45,18 +52,24 @@ func permissionFindByCondition(ctx context.Context, cond interface{}, opts ...*o
 	cursor, err := col.Find(ctx, cond, opts...)
 	if err != nil {
 		logger.Error("usermngmt - Permission - Find", logger.LogData{
-			"cond": cond,
-			"opts": opts,
-			"err":  err.Error(),
+			Source:  "usermngmt.permissionFindByCondition",
+			Message: err.Error(),
+			Data: map[string]interface{}{
+				"cond": cond,
+				"opts": opts,
+			},
 		})
 		return
 	}
 	defer cursor.Close(ctx)
 	if err = cursor.All(ctx, &docs); err != nil {
 		logger.Error("usermngmt - Permission - Decode", logger.LogData{
-			"cond": cond,
-			"opts": opts,
-			"err":  err.Error(),
+			Source:  "usermngmt.permissionFindByCondition",
+			Message: err.Error(),
+			Data: map[string]interface{}{
+				"cond": cond,
+				"opts": opts,
+			},
 		})
 		return
 	}

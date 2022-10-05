@@ -86,3 +86,13 @@ func Init(config Config) (*Service, error) {
 func GetInstance() *Service {
 	return s
 }
+
+// GetConnectOptions ...
+func GetConnectOptions(Host, DBName string) mongodb.Config {
+	return mongodb.Config{
+		Host:       Host,
+		DBName:     DBName,
+		Standalone: &mongodb.ConnectStandaloneOpts{},
+		TLS:        &mongodb.ConnectTLSOpts{},
+	}
+}

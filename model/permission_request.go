@@ -36,7 +36,9 @@ func (co PermissionCreateOptions) Validate() error {
 	// Name
 	if co.Name == "" {
 		logger.Error("usermngmt - Permission - Create: no name data", logger.LogData{
-			"payload": co,
+			Source:  "usermngmt.Validate",
+			Message: "usermngmt - Permission - Create: no name data",
+			Data:    co,
 		})
 		return errors.New("no name data")
 	}
@@ -44,7 +46,9 @@ func (co PermissionCreateOptions) Validate() error {
 	// Code
 	if co.Code == "" {
 		logger.Error("usermngmt - Permission - Create: no code data", logger.LogData{
-			"payload": co,
+			Source:  "usermngmt.Validate",
+			Message: "usermngmt - Permission - Create: no code data",
+			Data:    co,
 		})
 		return errors.New("no code data")
 	}
@@ -52,7 +56,9 @@ func (co PermissionCreateOptions) Validate() error {
 	// RoleID
 	if co.RoleID == "" {
 		logger.Error("usermngmt - Permission - Create: no roleID data", logger.LogData{
-			"payload": co,
+			Source:  "usermngmt.Validate",
+			Message: "usermngmt - Permission - Create: no roleID data",
+			Data:    co,
 		})
 		return errors.New("no role id data")
 	}
@@ -63,7 +69,9 @@ func (co PermissionCreateOptions) Validate() error {
 	// Desc
 	if co.Desc == "" {
 		logger.Error("usermngmt - Permission - Create: no desc data", logger.LogData{
-			"payload": co,
+			Source:  "usermngmt.Validate",
+			Message: "usermngmt - Permission - Create: no desc data",
+			Data:    co,
 		})
 		return errors.New("no desc data")
 	}
@@ -75,7 +83,9 @@ func (co PermissionUpdateOptions) Validate() error {
 	// Name
 	if co.Name == "" {
 		logger.Error("usermngmt - Permission - Update: no name data", logger.LogData{
-			"payload": co,
+			Source:  "usermngmt.Validate",
+			Message: "usermngmt - Permission - Update: no name data",
+			Data:    co,
 		})
 		return errors.New("no name data")
 	}
@@ -83,7 +93,9 @@ func (co PermissionUpdateOptions) Validate() error {
 	// Code
 	if co.Code == "" {
 		logger.Error("usermngmt - Permission - Update: no code data", logger.LogData{
-			"payload": co,
+			Source:  "usermngmt.Validate",
+			Message: "usermngmt - Permission - Update: no code data",
+			Data:    co,
 		})
 		return errors.New("no code data")
 	}
@@ -91,7 +103,9 @@ func (co PermissionUpdateOptions) Validate() error {
 	// RoleID
 	if co.RoleID == "" {
 		logger.Error("usermngmt - Permission - Update: no roleID data", logger.LogData{
-			"payload": co,
+			Source:  "usermngmt.Validate",
+			Message: "usermngmt - Permission - Update: no roleID data",
+			Data:    co,
 		})
 		return errors.New("no role id data")
 	}
@@ -102,7 +116,9 @@ func (co PermissionUpdateOptions) Validate() error {
 	// Desc
 	if co.Desc == "" {
 		logger.Error("usermngmt - Permission - Update: no desc data", logger.LogData{
-			"payload": co,
+			Source:  "usermngmt.Validate",
+			Message: "usermngmt - Permission - Update: no desc data",
+			Data:    co,
 		})
 		return errors.New("no desc data")
 	}

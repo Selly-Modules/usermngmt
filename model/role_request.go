@@ -33,7 +33,9 @@ func (co RoleCreateOptions) Validate() error {
 	// Name
 	if co.Name == "" {
 		logger.Error("usermngmt - Role - Create: no name data", logger.LogData{
-			"payload": co,
+			Source:  "usermngmt.Validate",
+			Message: "usermngmt - Role - Create: no name data",
+			Data:    co,
 		})
 		return errors.New(internal.ErrorInvalidName)
 	}
@@ -46,7 +48,9 @@ func (co RoleUpdateOptions) Validate() error {
 	// Name
 	if co.Name == "" {
 		logger.Error("usermngmt - Role - Update: no name data", logger.LogData{
-			"payload": co,
+			Source:  "usermngmt.Validate",
+			Message: "usermngmt - Role - Update: no name data",
+			Data:    co,
 		})
 		return errors.New(internal.ErrorInvalidName)
 	}

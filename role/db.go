@@ -19,8 +19,11 @@ func create(ctx context.Context, doc model.DBRole) error {
 	_, err := col.InsertOne(ctx, doc)
 	if err != nil {
 		logger.Error("usermngmt - Role - InsertOne", logger.LogData{
-			"doc": doc,
-			"err": err.Error(),
+			Source:  "usermngmt.create",
+			Message: err.Error(),
+			Data: map[string]interface{}{
+				"doc": doc,
+			},
 		})
 		return fmt.Errorf("error when create role: %s", err.Error())
 	}
@@ -35,9 +38,12 @@ func updateOneByCondition(ctx context.Context, cond interface{}, payload interfa
 	_, err := col.UpdateOne(ctx, cond, payload)
 	if err != nil {
 		logger.Error("usermngmt - Role - UpdateOne", logger.LogData{
-			"cond":    cond,
-			"payload": payload,
-			"err":     err.Error(),
+			Source:  "usermngmt.updateOneByCondition",
+			Message: err.Error(),
+			Data: map[string]interface{}{
+				"cond":    cond,
+				"payload": payload,
+			},
 		})
 		return fmt.Errorf("error when update role: %s", err.Error())
 	}
@@ -54,18 +60,24 @@ func findByCondition(ctx context.Context, cond interface{}, opts ...*options.Fin
 	cursor, err := col.Find(ctx, cond, opts...)
 	if err != nil {
 		logger.Error("usermngmt - Role - Find", logger.LogData{
-			"cond": cond,
-			"opts": opts,
-			"err":  err.Error(),
+			Source:  "usermngmt.findByCondition",
+			Message: err.Error(),
+			Data: map[string]interface{}{
+				"cond": cond,
+				"opts": opts,
+			},
 		})
 		return
 	}
 	defer cursor.Close(ctx)
 	if err = cursor.All(ctx, &docs); err != nil {
 		logger.Error("usermngmt - Role - Decode", logger.LogData{
-			"cond": cond,
-			"opts": opts,
-			"err":  err.Error(),
+			Source:  "usermngmt.findByCondition",
+			Message: err.Error(),
+			Data: map[string]interface{}{
+				"cond": cond,
+				"opts": opts,
+			},
 		})
 		return
 	}
@@ -80,8 +92,11 @@ func countByCondition(ctx context.Context, cond interface{}) int64 {
 	total, err := col.CountDocuments(ctx, cond)
 	if err != nil {
 		logger.Error("usermngmt - Role - CountDocuments", logger.LogData{
-			"err":  err.Error(),
-			"cond": cond,
+			Source:  "usermngmt.countByCondition",
+			Message: err.Error(),
+			Data: map[string]interface{}{
+				"cond": cond,
+			},
 		})
 	}
 	return total
@@ -98,8 +113,11 @@ func isRoleIDExisted(ctx context.Context, roleID primitive.ObjectID) bool {
 	total, err := col.CountDocuments(ctx, cond)
 	if err != nil {
 		logger.Error("usermngmt - Role - CountDocuments", logger.LogData{
-			"condition": cond,
-			"err":       err.Error(),
+			Source:  "usermngmt.isRoleIDExisted",
+			Message: err.Error(),
+			Data: map[string]interface{}{
+				"condition": cond,
+			},
 		})
 		return false
 	}

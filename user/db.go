@@ -24,8 +24,9 @@ func isPhoneNumberExisted(ctx context.Context, phone string) bool {
 	total, err := col.CountDocuments(ctx, cond)
 	if err != nil {
 		logger.Error("usermngmt - User - CountDocuments", logger.LogData{
-			"condition": cond,
-			"err":       err.Error(),
+			Source:  "usermngmt.user.isPhoneNumberExisted",
+			Message: err.Error(),
+			Data:    cond,
 		})
 		return true
 	}
@@ -44,8 +45,9 @@ func isEmailExisted(ctx context.Context, email string) bool {
 	total, err := col.CountDocuments(ctx, cond)
 	if err != nil {
 		logger.Error("usermngmt - User - CountDocuments", logger.LogData{
-			"condition": cond,
-			"err":       err.Error(),
+			Source:  "usermngmt.user.isEmailExisted",
+			Message: err.Error(),
+			Data:    cond,
 		})
 		return true
 	}
@@ -63,8 +65,9 @@ func isRoleExisted(ctx context.Context, roleID primitive.ObjectID) bool {
 	total, err := col.CountDocuments(ctx, cond)
 	if err != nil {
 		logger.Error("usermngmt - Role - CountDocuments", logger.LogData{
-			"condition": cond,
-			"err":       err.Error(),
+			Source:  "usermngmt.user.isRoleExisted",
+			Message: err.Error(),
+			Data:    cond,
 		})
 	}
 	return total != 0
@@ -88,18 +91,24 @@ func roleFindByCondition(ctx context.Context, cond interface{}, opts ...*options
 	cursor, err := col.Find(ctx, cond, opts...)
 	if err != nil {
 		logger.Error("usermngmt - Role - Find", logger.LogData{
-			"cond": cond,
-			"opts": opts,
-			"err":  err.Error(),
+			Source:  "usermngmt.user.roleFindByCondition",
+			Message: err.Error(),
+			Data: map[string]interface{}{
+				"cond": cond,
+				"opts": opts,
+			},
 		})
 		return
 	}
 	defer cursor.Close(ctx)
 	if err = cursor.All(ctx, &docs); err != nil {
 		logger.Error("usermngmt - Role - Decode", logger.LogData{
-			"cond": cond,
-			"opts": opts,
-			"err":  err.Error(),
+			Source:  "usermngmt.user.roleFindByCondition",
+			Message: err.Error(),
+			Data: map[string]interface{}{
+				"cond": cond,
+				"opts": opts,
+			},
 		})
 		return
 	}
@@ -115,18 +124,24 @@ func permissionFindByCondition(ctx context.Context, cond interface{}, opts ...*o
 	cursor, err := col.Find(ctx, cond, opts...)
 	if err != nil {
 		logger.Error("usermngmt - Permission - Find", logger.LogData{
-			"cond": cond,
-			"opts": opts,
-			"err":  err.Error(),
+			Source:  "usermngmt.user.permissionFindByCondition",
+			Message: err.Error(),
+			Data: map[string]interface{}{
+				"cond": cond,
+				"opts": opts,
+			},
 		})
 		return
 	}
 	defer cursor.Close(ctx)
 	if err = cursor.All(ctx, &docs); err != nil {
 		logger.Error("usermngmt - Permission - Decode", logger.LogData{
-			"cond": cond,
-			"opts": opts,
-			"err":  err.Error(),
+			Source:  "usermngmt.user.permissionFindByCondition",
+			Message: err.Error(),
+			Data: map[string]interface{}{
+				"cond": cond,
+				"opts": opts,
+			},
 		})
 		return
 	}
@@ -141,8 +156,9 @@ func permissionCountByCondition(ctx context.Context, cond interface{}) int64 {
 	total, err := col.CountDocuments(ctx, cond)
 	if err != nil {
 		logger.Error("usermngmt - Permission - CountDocuments", logger.LogData{
-			"err":  err.Error(),
-			"cond": cond,
+			Source:  "usermngmt.user.permissionCountByCondition",
+			Message: err.Error(),
+			Data:    cond,
 		})
 	}
 	return total
@@ -155,8 +171,9 @@ func create(ctx context.Context, doc model.DBUser) error {
 	_, err := col.InsertOne(ctx, doc)
 	if err != nil {
 		logger.Error("usermngmt - User - InsertOne", logger.LogData{
-			"doc": doc,
-			"err": err.Error(),
+			Source:  "usermngmt.user.create",
+			Message: err.Error(),
+			Data:    doc,
 		})
 		return fmt.Errorf("error when create user: %s", err.Error())
 	}
@@ -171,9 +188,12 @@ func updateOneByCondition(ctx context.Context, cond interface{}, payload interfa
 	_, err := col.UpdateOne(ctx, cond, payload)
 	if err != nil {
 		logger.Error("usermngmt - User - UpdateOne", logger.LogData{
-			"cond":    cond,
-			"payload": payload,
-			"err":     err.Error(),
+			Source:  "usermngmt.user.updateOneByCondition",
+			Message: err.Error(),
+			Data: map[string]interface{}{
+				"cond":    cond,
+				"payload": payload,
+			},
 		})
 		return fmt.Errorf("error when update user: %s", err.Error())
 	}
@@ -188,9 +208,12 @@ func updateManyByCondition(ctx context.Context, cond interface{}, payload interf
 	_, err := col.UpdateMany(ctx, cond, payload)
 	if err != nil {
 		logger.Error("usermngmt - User - UpdateMany", logger.LogData{
-			"cond":    cond,
-			"payload": payload,
-			"err":     err.Error(),
+			Source:  "usermngmt.user.updateManyByCondition",
+			Message: err.Error(),
+			Data: map[string]interface{}{
+				"cond":    cond,
+				"payload": payload,
+			},
 		})
 		return fmt.Errorf("error when update user: %s", err.Error())
 	}
@@ -216,18 +239,24 @@ func findByCondition(ctx context.Context, cond interface{}, opts ...*options.Fin
 	cursor, err := col.Find(ctx, cond, opts...)
 	if err != nil {
 		logger.Error("usermngmt - User - Find", logger.LogData{
-			"cond": cond,
-			"opts": opts,
-			"err":  err.Error(),
+			Source:  "usermngmt.user.findByCondition",
+			Message: err.Error(),
+			Data: map[string]interface{}{
+				"cond": cond,
+				"opts": opts,
+			},
 		})
 		return
 	}
 	defer cursor.Close(ctx)
 	if err = cursor.All(ctx, &docs); err != nil {
 		logger.Error("usermngmt - User - Decode", logger.LogData{
-			"cond": cond,
-			"opts": opts,
-			"err":  err.Error(),
+			Source:  "usermngmt.user.findByCondition",
+			Message: err.Error(),
+			Data: map[string]interface{}{
+				"cond": cond,
+				"opts": opts,
+			},
 		})
 		return
 	}
@@ -242,8 +271,11 @@ func countByCondition(ctx context.Context, cond interface{}) int64 {
 	total, err := col.CountDocuments(ctx, cond)
 	if err != nil {
 		logger.Error("usermngmt - Count", logger.LogData{
-			"err":  err.Error(),
-			"cond": cond,
+			Source:  "usermngmt.user.countByCondition",
+			Message: err.Error(),
+			Data: map[string]interface{}{
+				"cond": cond,
+			},
 		})
 	}
 	return total

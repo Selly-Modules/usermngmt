@@ -2,6 +2,8 @@ package internal
 
 import (
 	"fmt"
+	"github.com/thoas/go-funk"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"strings"
 
 	"github.com/Selly-Modules/mongodb"
@@ -45,4 +47,11 @@ func GenerateCode(s string) string {
 		emptySpace = " "
 	)
 	return strings.ReplaceAll(mongodb.NonAccentVietnamese(s), emptySpace, underscore)
+}
+
+// ConvertObjectIDsToStrings ...
+func ConvertObjectIDsToStrings(ids []primitive.ObjectID) []string {
+	return funk.Map(ids, func(item primitive.ObjectID) string {
+		return item.Hex()
+	}).([]string)
 }

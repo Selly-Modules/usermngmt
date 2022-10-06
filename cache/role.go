@@ -42,7 +42,9 @@ func Roles() {
 			}
 			if err := SetKeyValue(role.ID.Hex(), entry, 0); err != nil {
 				logger.Error("usermngmt - CacheRole", logger.LogData{
-					"err": err.Error(),
+					Source:  "usermngmt.cache.Roles",
+					Message: err.Error(),
+					Data:    entry,
 				})
 				return
 			}
@@ -65,7 +67,9 @@ func GetCachedRole(key string) CachedRole {
 	var cachedRole CachedRole
 	if err := json.Unmarshal(value, &cachedRole); err != nil {
 		logger.Error("usermngmt - GetCachedRole - Unmarshal", logger.LogData{
-			"err": err.Error(),
+			Source:  "usermngmt.cache.GetCachedRole",
+			Message: err.Error(),
+			Data:    cachedRole,
 		})
 	}
 	return cachedRole

@@ -7,6 +7,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+const maxLimit = 500
+
 // CommonQuery ...
 type CommonQuery struct {
 	Page    int64
@@ -78,8 +80,11 @@ func (q *CommonQuery) GetFindOptionsUsingPage() *options.FindOptions {
 
 // SetDefaultLimit ...
 func (q *CommonQuery) SetDefaultLimit() {
-	if q.Limit <= 0 || q.Limit > 20 {
+	if q.Limit <= 0 {
 		q.Limit = 20
+	}
+	if q.Limit > maxLimit {
+		q.Limit = 500
 	}
 }
 
